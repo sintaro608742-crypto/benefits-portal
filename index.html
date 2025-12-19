@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>月収100万円→300万円 スケールアップ特典パッケージ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #f59e0b, #7c3aed, #00d4aa, #7c3aed, #f59e0b);
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #000;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: clamp(28px, 5vw, 42px);
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #a0a0a0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 30px 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #7c3aed 0%, #00d4aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Section Title */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 40px 0 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #7c3aed 0%, #00d4aa 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .section-title h2 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .section-title span {
+            font-size: 12px;
+            color: #888;
+            margin-left: auto;
+        }
+
+        /* Benefit Cards */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .benefit-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .benefit-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--card-color), transparent);
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .benefit-card.app { --card-color: #7c3aed; }
+        .benefit-card.pdf { --card-color: #00d4aa; }
+        .benefit-card.template { --card-color: #f59e0b; }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .card-number {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--card-color), rgba(255,255,255,0.1));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .card-type {
+            font-size: 10px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .benefit-card.app .card-type {
+            background: rgba(124, 58, 237, 0.2);
+            color: #a78bfa;
+        }
+
+        .benefit-card.pdf .card-type {
+            background: rgba(0, 212, 170, 0.2);
+            color: #00d4aa;
+        }
+
+        .benefit-card.template .card-type {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .card-description {
+            font-size: 13px;
+            color: #a0a0a0;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .card-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .feature-tag {
+            font-size: 11px;
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            color: #888;
+        }
+
+        .card-button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--card-color), rgba(255,255,255,0.1));
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .card-button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+        }
+
+        .card-button.disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        .card-button.disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Value Section */
+        .value-section {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(0, 212, 170, 0.1) 100%);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 50px 0;
+            text-align: center;
+        }
+
+        .value-section h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #a0a0a0;
+        }
+
+        .total-value {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .value-note {
+            font-size: 14px;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 50px;
+        }
+
+        .footer p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .header {
+                padding: 40px 15px 30px;
+            }
+
+            .stats {
+                gap: 25px;
+            }
+
+            .stat-number {
+                font-size: 28px;
+            }
+
+            .benefit-card {
+                padding: 20px;
+            }
+
+            .value-section {
+                padding: 30px 20px;
+            }
+
+            .total-value {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="badge">PREMIUM BENEFITS PACKAGE</div>
+        <h1>月収100万円→300万円<br>スケールアップ特典</h1>
+        <p>すでに月収100万円を達成した起業家・実業家が、さらに300万円以上へスケールするための実践ツール集</p>
+    </header>
+
+    <div class="stats">
+        <div class="stat-item">
+            <div class="stat-number">16</div>
+            <div class="stat-label">特典コンテンツ</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">5</div>
+            <div class="stat-label">診断アプリ</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">8</div>
+            <div class="stat-label">PDF資料</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">3</div>
+            <div class="stat-label">設計テンプレート</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Diagnostic Apps -->
+        <div class="section-title">
+            <div class="section-icon">🎯</div>
+            <h2>診断アプリ</h2>
+            <span>今すぐ診断可能</span>
+        </div>
+
+        <div class="benefits-grid">
+            <div class="benefit-card app">
+                <div class="card-header">
+                    <div class="card-number">②</div>
+                    <span class="card-type">WEBアプリ</span>
+                </div>
+                <h3 class="card-title">月収ステージ突破診断</h3>
+                <p class="card-description">10問の質問で「収益力」「仕組み化」「時間効率」を診断。あなたの次のステージへのボトルネックを特定します。</p>
+                <div class="card-features">
+                    <span class="feature-tag">所要時間 3分</span>
+                    <span class="feature-tag">10問診断</span>
+                    <span class="feature-tag">即時結果</span>
+                </div>
+                <a href="https://sintaro608742-crypto.github.io/stage-breakthrough-diagnosis/" target="_blank" class="card-button">診断を受ける →</a>
+            </div>
+
+            <div class="benefit-card app">
+                <div class="card-header">
+                    <div class="card-number">⑥</div>
+                    <span class="card-type">WEBアプリ</span>
+                </div>
+                <h3 class="card-title">仕組み化レベル診断</h3>
+                <p class="card-description">集客・セールス・サービス提供・顧客管理・財務の5領域15問で、あなたのビジネスの仕組み化レベルを可視化。</p>
+                <div class="card-features">
+                    <span class="feature-tag">所要時間 5分</span>
+                    <span class="feature-tag">15問診断</span>
+                    <span class="feature-tag">5領域分析</span>
+                </div>
+                <a href="https://sintaro608742-crypto.github.io/systemization-diagnosis/" target="_blank" class="card-button">診断を受ける →</a>
+            </div>
+
+            <div class="benefit-card app">
+                <div class="card-header">
+                    <div class="card-number">⑧</div>
+                    <span class="card-type">WEBアプリ</span>
+                </div>
+                <h3 class="card-title">法人化タイミング診断</h3>
+                <p class="card-description">税務・リスク・信用・成長の4つの観点から、あなたにとっての法人化ベストタイミングを判定します。</p>
+                <div class="card-features">
+                    <span class="feature-tag">所要時間 4分</span>
+                    <span class="feature-tag">12問診断</span>
+                    <span class="feature-tag">4観点分析</span>
+                </div>
+                <a href="https://sintaro608742-crypto.github.io/incorporation-timing-diagnosis/" target="_blank" class="card-button">診断を受ける →</a>
+            </div>
+
+            <div class="benefit-card app">
+                <div class="card-header">
+                    <div class="card-number">⑪</div>
+                    <span class="card-type">WEBアプリ</span>
+                </div>
+                <h3 class="card-title">収益構造診断</h3>
+                <p class="card-description">スポット・継続・高単価の収益バランスを12問で診断。あなたのビジネスの安定性と成長可能性を可視化します。</p>
+                <div class="card-features">
+                    <span class="feature-tag">所要時間 4分</span>
+                    <span class="feature-tag">12問診断</span>
+                    <span class="feature-tag">収益タイプ判定</span>
+                </div>
+                <a href="https://sintaro608742-crypto.github.io/revenue-diagnosis/" target="_blank" class="card-button">診断を受ける →</a>
+            </div>
+
+            <div class="benefit-card app">
+                <div class="card-header">
+                    <div class="card-number">⑭</div>
+                    <span class="card-type">WEBアプリ</span>
+                </div>
+                <h3 class="card-title">集客チャネル診断</h3>
+                <p class="card-description">SNS・広告・コンテンツ・紹介など5つの集客チャネルを12問で診断。依存度と多様性を分析します。</p>
+                <div class="card-features">
+                    <span class="feature-tag">所要時間 4分</span>
+                    <span class="feature-tag">12問診断</span>
+                    <span class="feature-tag">5チャネル分析</span>
+                </div>
+                <a href="https://sintaro608742-crypto.github.io/channel-diagnosis/" target="_blank" class="card-button">診断を受ける →</a>
+            </div>
+        </div>
+
+        <!-- PDF Materials -->
+        <div class="section-title">
+            <div class="section-icon">📚</div>
+            <h2>PDF資料</h2>
+            <span>ダウンロード可能</span>
+        </div>
+
+        <div class="benefits-grid">
+            <div class="benefit-card pdf">
+                <div class="card-header">
+                    <div class="card-number">①</div>
+                    <span class="card-type">PDF 4ページ</span>
+                </div>
+                <h3 class="card-title">100万→300万ロードマップ</h3>
+                <p class="card-description">月収100万円から300万円へ到達するための3つのルートと4つのフェーズを完全解説。成功者のKPIと習慣も公開。</p>
+                <div class="card-features">
+                    <span class="feature-tag">ロードマップ</span>
+                    <span class="feature-tag">KPI設計</span>
+                    <span class="feature-tag">実践チェック</span>
+                </div>
+                <a href="https://sintaro608742-crypto.github.io/benefits-downloads/01_100%E4%B8%87%E3%81%8B%E3%82%89300%E4%B8%87%E3%83%AD%E3%83%BC%E3%83%89%E3%83%9E%E3%83%83%E3%83%97.html" target="_blank" class="card-button">ダウンロード →</a>
+            </div>
+
+            <div class="benefit-card pdf">
+                <div class="card-header">
+                    <div class="card-number">④</div>
+                    <span class="card-type">PDF 3ページ</span>
+                </div>
+                <h3 class="card-title">AI業務自動化マップ</h3>
+                <p class="card-description">5つの業務領域別に、AIで自動化できるタスクと優先度を整理。今日から使えるツール紹介付き。</p>
+                <div class="card-features">
+                    <span class="feature-tag">業務別マップ</span>
+                    <span class="feature-tag">優先度付き</span>
+                    <span class="feature-tag">ツール紹介</span>
+                </div>
+                <a href="https://sintaro608742-crypto.github.io/benefits-downloads/04_AI%E6%A5%AD%E5%8B%99%E8%87%AA%E5%8B%95%E5%8C%96%E3%83%9E%E3%83%83%E3%83%97.html" target="_blank" class="card-button">ダウンロード →</a>
+            </div>
+
+            <div class="benefit-card pdf">
+                <div class="card-header">
+                    <div class="card-number">⑤</div>
+                    <span class="card-type">PDF 4ページ</span>
+                </div>
+                <h3 class="card-title">AIアシスタント活用テンプレ集</h3>
+                <p class="card-description">SNS・セールス・顧客対応・分析など、すぐにコピペで使えるAIプロンプトテンプレート16種類を収録。</p>
+                <div class="card-features">
+                    <span class="feature-tag">16テンプレ</span>
+                    <span class="feature-tag">コピペOK</span>
+                    <span class="feature-tag">6カテゴリ</span>
+                </div>
+                <a href="https://sintaro608742-crypto.github.io/benefits-downloads/05_AI%E3%82%A2%E3%82%B7%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%88%E6%B4%BB%E7%94%A8%E3%83%86%E3%83%B3%E3%83%97%E3%83%AC%E9%9B%86.html" target="_blank" class="card-button">ダウンロード →</a>
+            </div>
+
+            <div class="benefit-card pdf">
+                <div class="card-header">
+                    <div class="card-number">⑦</div>
+                    <span class="card-type">PDF 4ページ</span>
+                </div>
+                <h3 class="card-title">1日3時間経営の作り方</h3>
+                <p class="card-description">タイムオーディットから始める時間最適化。やめる・自動化・任せる・集中の4分類で、経営時間を3時間に圧縮。</p>
+                <div class="card-features">
+                    <span class="feature-tag">時間術</span>
+                    <span class="feature-tag">ツール紹介</span>
+                    <span class="feature-tag">実装ステップ</span>
+                </div>
+                <a href="https://sintaro608742-crypto.github.io/benefits-downloads/07_1%E6%97%A53%E6%99%82%E9%96%93%E7%B5%8C%E5%96%B6%E3%81%AE%E4%BD%9C%E3%82%8A%E6%96%B9.html" target="_blank" class="card-button">ダウンロード →</a>
+            </div>
+
+            <div class="benefit-card pdf">
+                <div class="card-header">
+                    <div class="card-number">⑩</div>
+                    <span class="card-type">PDF 4ページ</span>
+                </div>
+                <h3 class="card-title">外注先選定チェックリスト</h3>
+                <p class="card-description">外注先選定の事前準備から評価・契約・リスク管理まで網羅。失敗しないパートナー選びのための完全チェックリスト。</p>
+                <div class="card-features">
+                    <span class="feature-tag">選定基準</span>
+                    <span class="feature-tag">契約管理</span>
+                    <span class="feature-tag">リスク対策</span>
+                </div>
+                <a href="https://sintaro608742-crypto.github.io/benefits-downloads/10_%E5%A4%96%E6%B3%A8%E5%85%88%E9%81%B8%E5%AE%9A%E3%83%81%E3%82%A7%E3%83%83%E3%82%AF%E3%83%AA%E3%82%B9%E3%83%88.html" target="_blank" class="card-button">ダウンロード →</a>
+            </div>
+
+            <div class="benefit-card pdf">
+                <div class="card-header">
+                    <div class="card-number">⑫</div>
+                    <span class="card-type">PDF 4ページ</span>
+                </div>
+                <h3 class="card-title">成約率改善チェックリスト</h3>
+                <p class="card-description">商談前・商談中・クロージングの各フェーズで成約率を高めるポイントを網羅。60%以上の成約率を目指す実践リスト。</p>
+                <div class="card-features">
+                    <span class="feature-tag">商談準備</span>
+                    <span class="feature-tag">ヒアリング</span>
+                    <span class="feature-tag">クロージング</span>
+                </div>
+                <a href="https://sintaro608742-crypto.github.io/benefits-downloads/12_%E6%88%90%E7%B4%84%E7%8E%87%E6%94%B9%E5%96%84%E3%83%81%E3%82%A7%E3%83%83%E3%82%AF%E3%83%AA%E3%82%B9%E3%83%88.html" target="_blank" class="card-button">ダウンロード →</a>
+            </div>
+
+            <div class="benefit-card pdf">
+                <div class="card-header">
+                    <div class="card-number">⑬</div>
+                    <span class="card-type">PDF 4ページ</span>
+                </div>
+                <h3 class="card-title">節税対策チェックリスト</h3>
+                <p class="card-description">経費計上・所得控除・法人化検討の3カテゴリで節税ポイントを整理。税理士相談前に確認すべき完全リスト。</p>
+                <div class="card-features">
+                    <span class="feature-tag">経費計上</span>
+                    <span class="feature-tag">所得控除</span>
+                    <span class="feature-tag">法人化検討</span>
+                </div>
+                <a href="https://sintaro608742-crypto.github.io/benefits-downloads/13_%E7%AF%80%E7%A8%8E%E5%AF%BE%E7%AD%96%E3%83%81%E3%82%A7%E3%83%83%E3%82%AF%E3%83%AA%E3%82%B9%E3%83%88.html" target="_blank" class="card-button">ダウンロード →</a>
+            </div>
+
+            <div class="benefit-card pdf">
+                <div class="card-header">
+                    <div class="card-number">⑮</div>
+                    <span class="card-type">PDF 4ページ</span>
+                </div>
+                <h3 class="card-title">セールストーク台本テンプレート</h3>
+                <p class="card-description">高単価商品を販売するための商談フロー完全台本。オープニングからクロージングまでの具体的トーク例付き。</p>
+                <div class="card-features">
+                    <span class="feature-tag">台本形式</span>
+                    <span class="feature-tag">トーク例</span>
+                    <span class="feature-tag">切り返し集</span>
+                </div>
+                <a href="https://sintaro608742-crypto.github.io/benefits-downloads/15_%E3%82%BB%E3%83%BC%E3%83%AB%E3%82%B9%E3%83%88%E3%83%BC%E3%82%AF%E5%8F%B0%E6%9C%AC%E3%83%86%E3%83%B3%E3%83%97%E3%83%AC%E3%83%BC%E3%83%88.html" target="_blank" class="card-button">ダウンロード →</a>
+            </div>
+        </div>
+
+        <!-- Template -->
+        <div class="section-title">
+            <div class="section-icon">📝</div>
+            <h2>設計テンプレート</h2>
+            <span>ワークシート形式</span>
+        </div>
+
+        <div class="benefits-grid">
+            <div class="benefit-card template">
+                <div class="card-header">
+                    <div class="card-number">③</div>
+                    <span class="card-type">ワークシート 6ページ</span>
+                </div>
+                <h3 class="card-title">高単価商品設計テンプレート</h3>
+                <p class="card-description">30万円〜100万円以上の高単価商品を設計するための完全ワークシート。コンセプト・ペルソナ・価格設定・販売戦略を網羅。</p>
+                <div class="card-features">
+                    <span class="feature-tag">5シート構成</span>
+                    <span class="feature-tag">価格計算式</span>
+                    <span class="feature-tag">チェックリスト</span>
+                </div>
+                <a href="https://sintaro608742-crypto.github.io/benefits-downloads/03_%E9%AB%98%E5%8D%98%E4%BE%A1%E5%95%86%E5%93%81%E8%A8%AD%E8%A8%88%E3%83%86%E3%83%B3%E3%83%97%E3%83%AC%E3%83%BC%E3%83%88.html" target="_blank" class="card-button">ダウンロード →</a>
+            </div>
+
+            <div class="benefit-card template">
+                <div class="card-header">
+                    <div class="card-number">⑨</div>
+                    <span class="card-type">ワークシート 2ページ</span>
+                </div>
+                <h3 class="card-title">月次KPIダッシュボード</h3>
+                <p class="card-description">売上・顧客・マーケティングの主要KPIを毎月トラッキング。目標との乖離を一目で把握できるダッシュボード形式。</p>
+                <div class="card-features">
+                    <span class="feature-tag">KPI管理</span>
+                    <span class="feature-tag">月次記録</span>
+                    <span class="feature-tag">目標管理</span>
+                </div>
+                <a href="https://sintaro608742-crypto.github.io/benefits-downloads/09_%E6%9C%88%E6%AC%A1KPI%E3%83%80%E3%83%83%E3%82%B7%E3%83%A5%E3%83%9C%E3%83%BC%E3%83%89.html" target="_blank" class="card-button">ダウンロード →</a>
+            </div>
+
+            <div class="benefit-card template">
+                <div class="card-header">
+                    <div class="card-number">⑯</div>
+                    <span class="card-type">ワークシート 2ページ</span>
+                </div>
+                <h3 class="card-title">キャッシュフロー管理テンプレート</h3>
+                <p class="card-description">6ヶ月先までの資金繰りを予測・管理。固定費・変動費の整理と入金サイクル管理で黒字倒産を防ぐ。</p>
+                <div class="card-features">
+                    <span class="feature-tag">6ヶ月予測</span>
+                    <span class="feature-tag">経費分類</span>
+                    <span class="feature-tag">入金管理</span>
+                </div>
+                <a href="https://sintaro608742-crypto.github.io/benefits-downloads/16_%E3%82%AD%E3%83%A3%E3%83%83%E3%82%B7%E3%83%A5%E3%83%95%E3%83%AD%E3%83%BC%E7%AE%A1%E7%90%86%E3%83%86%E3%83%B3%E3%83%97%E3%83%AC%E3%83%BC%E3%83%88.html" target="_blank" class="card-button">ダウンロード →</a>
+            </div>
+        </div>
+
+        <!-- Value Section -->
+        <div class="value-section">
+            <h3>すべての特典を合わせた価値</h3>
+            <div class="total-value">¥398,000相当</div>
+            <p class="value-note">※ 各コンテンツを個別に制作・購入した場合の想定価値</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2024 Premium Benefits Package. All rights reserved.</p>
+    </footer>
+</body>
+</html>
