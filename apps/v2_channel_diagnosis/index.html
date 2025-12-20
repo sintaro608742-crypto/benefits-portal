@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>集客チャネル診断 | あなたに最適な集客戦略を発見</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #a0a0a0;
+            font-size: 1rem;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #f39c12, #e74c3c);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #a0a0a0;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Question Card */
+        .question-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .question-category {
+            display: inline-block;
+            background: rgba(243, 156, 18, 0.2);
+            color: #f39c12;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            margin-left: 10px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* Options */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 18px 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            background: rgba(243, 156, 18, 0.1);
+            border-color: rgba(243, 156, 18, 0.5);
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: rgba(243, 156, 18, 0.2);
+            border-color: #f39c12;
+        }
+
+        .option-marker {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .option.selected .option-marker {
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            border-color: #f39c12;
+        }
+
+        .option.selected .option-marker::after {
+            content: '✓';
+            color: white;
+            font-size: 14px;
+        }
+
+        .option-text {
+            font-size: 1rem;
+            color: #e0e0e0;
+        }
+
+        /* Intro Screen */
+        .intro-screen {
+            text-align: center;
+        }
+
+        .intro-screen h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #f39c12;
+        }
+
+        .intro-features {
+            display: grid;
+            gap: 15px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .intro-feature {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .intro-feature-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(243, 156, 18, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .intro-feature-text {
+            color: #c0c0c0;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
+        }
+
+        /* Results Screen */
+        .results-screen {
+            display: none;
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .result-type {
+            display: inline-block;
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .result-title {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .result-subtitle {
+            color: #a0a0a0;
+        }
+
+        /* Score Cards */
+        .score-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .score-section h3 {
+            color: #f39c12;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .channel-scores {
+            display: grid;
+            gap: 15px;
+        }
+
+        .channel-score-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .channel-label {
+            width: 100px;
+            font-size: 0.9rem;
+            color: #c0c0c0;
+        }
+
+        .channel-bar-container {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            height: 24px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .channel-bar {
+            height: 100%;
+            border-radius: 12px;
+            transition: width 1s ease;
+        }
+
+        .channel-bar.sns { background: linear-gradient(90deg, #e74c3c, #c0392b); }
+        .channel-bar.ads { background: linear-gradient(90deg, #3498db, #2980b9); }
+        .channel-bar.content { background: linear-gradient(90deg, #2ecc71, #27ae60); }
+        .channel-bar.referral { background: linear-gradient(90deg, #9b59b6, #8e44ad); }
+        .channel-bar.other { background: linear-gradient(90deg, #f39c12, #d68910); }
+
+        .channel-value {
+            width: 50px;
+            text-align: right;
+            font-weight: bold;
+            color: #f39c12;
+        }
+
+        /* Main Score */
+        .main-score {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.1), rgba(231, 76, 60, 0.1));
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .main-score-value {
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .main-score-label {
+            color: #a0a0a0;
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+
+        /* Recommendations */
+        .recommendations {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .recommendations h3 {
+            color: #f39c12;
+            margin-bottom: 20px;
+        }
+
+        .recommendation-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .recommendation-priority {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .recommendation-content h4 {
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .recommendation-content p {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        /* Diagnosis Type */
+        .diagnosis-type {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .diagnosis-type h3 {
+            color: #f39c12;
+            margin-bottom: 15px;
+        }
+
+        .diagnosis-type-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .diagnosis-type-desc {
+            color: #c0c0c0;
+            line-height: 1.8;
+        }
+
+        /* Actions */
+        .result-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #f39c12, #e74c3c);
+            color: white;
+            border: none;
+        }
+
+        .action-btn.secondary {
+            background: transparent;
+            color: #f39c12;
+            border: 2px solid #f39c12;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 15px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .question-card {
+                padding: 25px 20px;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .result-title {
+                font-size: 1.5rem;
+            }
+
+            .main-score-value {
+                font-size: 3rem;
+            }
+
+            .channel-label {
+                width: 80px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-icon">📢</div>
+            <h1>集客チャネル診断</h1>
+            <p>あなたのビジネスに最適な集客戦略を発見</p>
+        </div>
+
+        <!-- Intro Screen -->
+        <div id="introScreen" class="question-card intro-screen">
+            <h2>12の質問であなたの集客力を診断</h2>
+            <p style="color: #a0a0a0; margin-bottom: 20px;">
+                現在の集客チャネルを分析し、<br>最も効果的な戦略を見つけましょう
+            </p>
+
+            <div class="intro-features">
+                <div class="intro-feature">
+                    <div class="intro-feature-icon">📊</div>
+                    <div class="intro-feature-text">5つのチャネルカテゴリを分析</div>
+                </div>
+                <div class="intro-feature">
+                    <div class="intro-feature-icon">🎯</div>
+                    <div class="intro-feature-text">あなたに合った集客タイプを診断</div>
+                </div>
+                <div class="intro-feature">
+                    <div class="intro-feature-icon">💡</div>
+                    <div class="intro-feature-text">優先すべきチャネルを提案</div>
+                </div>
+                <div class="intro-feature">
+                    <div class="intro-feature-icon">⏱️</div>
+                    <div class="intro-feature-text">所要時間：約3分</div>
+                </div>
+            </div>
+
+            <button class="start-btn" onclick="startDiagnosis()">診断を始める</button>
+        </div>
+
+        <!-- Question Screen -->
+        <div id="questionScreen" class="hidden">
+            <div class="progress-text">
+                質問 <span id="currentQ">1</span> / <span id="totalQ">12</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <div class="question-card">
+                <div>
+                    <span class="question-number" id="questionNumber">Q1</span>
+                    <span class="question-category" id="questionCategory">SNS系</span>
+                </div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="results-screen">
+            <div class="result-header">
+                <div class="result-type">診断結果</div>
+                <h2 class="result-title" id="resultTitle">集客チャネル分析完了</h2>
+                <p class="result-subtitle">あなたの集客戦略を分析しました</p>
+            </div>
+
+            <div class="main-score">
+                <div class="main-score-value" id="mainScore">75</div>
+                <div class="main-score-label">チャネル多様性スコア</div>
+            </div>
+
+            <div class="diagnosis-type">
+                <h3>あなたの集客タイプ</h3>
+                <div class="diagnosis-type-name" id="diagnosisTypeName">バランス型</div>
+                <p class="diagnosis-type-desc" id="diagnosisTypeDesc">説明文がここに入ります</p>
+            </div>
+
+            <div class="score-section">
+                <h3>📊 チャネル別スコア</h3>
+                <div class="channel-scores">
+                    <div class="channel-score-item">
+                        <span class="channel-label">SNS</span>
+                        <div class="channel-bar-container">
+                            <div class="channel-bar sns" id="snsBar" style="width: 0%"></div>
+                        </div>
+                        <span class="channel-value" id="snsValue">0%</span>
+                    </div>
+                    <div class="channel-score-item">
+                        <span class="channel-label">広告</span>
+                        <div class="channel-bar-container">
+                            <div class="channel-bar ads" id="adsBar" style="width: 0%"></div>
+                        </div>
+                        <span class="channel-value" id="adsValue">0%</span>
+                    </div>
+                    <div class="channel-score-item">
+                        <span class="channel-label">コンテンツ</span>
+                        <div class="channel-bar-container">
+                            <div class="channel-bar content" id="contentBar" style="width: 0%"></div>
+                        </div>
+                        <span class="channel-value" id="contentValue">0%</span>
+                    </div>
+                    <div class="channel-score-item">
+                        <span class="channel-label">紹介</span>
+                        <div class="channel-bar-container">
+                            <div class="channel-bar referral" id="referralBar" style="width: 0%"></div>
+                        </div>
+                        <span class="channel-value" id="referralValue">0%</span>
+                    </div>
+                    <div class="channel-score-item">
+                        <span class="channel-label">その他</span>
+                        <div class="channel-bar-container">
+                            <div class="channel-bar other" id="otherBar" style="width: 0%"></div>
+                        </div>
+                        <span class="channel-value" id="otherValue">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recommendations">
+                <h3>💡 優先改善ポイント</h3>
+                <div id="recommendationsList"></div>
+            </div>
+
+            <div class="result-actions">
+                <button class="action-btn primary" onclick="location.reload()">もう一度診断する</button>
+                <a href="https://sintaro608742-crypto.github.io/benefits-portal/" class="action-btn secondary">特典一覧を見る</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // SNS系 (Q1-3)
+            {
+                category: "SNS系",
+                text: "SNS（Twitter/X、Instagram、TikTokなど）をビジネスにどの程度活用していますか？",
+                options: [
+                    { text: "毎日投稿し、フォロワーとの交流も積極的", scores: { sns: 4, ads: 0, content: 1, referral: 0, other: 0 } },
+                    { text: "週に数回投稿している", scores: { sns: 3, ads: 0, content: 0, referral: 0, other: 0 } },
+                    { text: "たまに投稿する程度", scores: { sns: 2, ads: 0, content: 0, referral: 0, other: 0 } },
+                    { text: "アカウントはあるがほぼ活用していない", scores: { sns: 1, ads: 0, content: 0, referral: 0, other: 0 } },
+                    { text: "SNSは使っていない", scores: { sns: 0, ads: 0, content: 0, referral: 0, other: 0 } }
+                ]
+            },
+            {
+                category: "SNS系",
+                text: "SNSからの見込み客獲得状況は？",
+                options: [
+                    { text: "SNSが主要な集客源になっている", scores: { sns: 4, ads: 0, content: 0, referral: 0, other: 0 } },
+                    { text: "定期的にSNS経由で問い合わせがある", scores: { sns: 3, ads: 0, content: 0, referral: 0, other: 0 } },
+                    { text: "たまにSNS経由の問い合わせがある", scores: { sns: 2, ads: 0, content: 0, referral: 0, other: 0 } },
+                    { text: "ほとんどSNSからは来ない", scores: { sns: 1, ads: 0, content: 0, referral: 0, other: 0 } }
+                ]
+            },
+            {
+                category: "SNS系",
+                text: "SNSでのエンゲージメント（いいね、コメント、シェア）はどうですか？",
+                options: [
+                    { text: "高いエンゲージメントを維持できている", scores: { sns: 4, ads: 0, content: 0, referral: 1, other: 0 } },
+                    { text: "まあまあ反応がある", scores: { sns: 3, ads: 0, content: 0, referral: 0, other: 0 } },
+                    { text: "反応は少なめ", scores: { sns: 2, ads: 0, content: 0, referral: 0, other: 0 } },
+                    { text: "ほとんど反応がない", scores: { sns: 1, ads: 0, content: 0, referral: 0, other: 0 } }
+                ]
+            },
+            // 広告系 (Q4-5)
+            {
+                category: "広告系",
+                text: "オンライン広告（Facebook/Instagram広告、Google広告など）を使っていますか？",
+                options: [
+                    { text: "複数の広告プラットフォームを運用中", scores: { sns: 0, ads: 4, content: 0, referral: 0, other: 0 } },
+                    { text: "1つの広告プラットフォームを継続運用", scores: { sns: 0, ads: 3, content: 0, referral: 0, other: 0 } },
+                    { text: "過去に試したことがある", scores: { sns: 0, ads: 2, content: 0, referral: 0, other: 0 } },
+                    { text: "広告は使っていない", scores: { sns: 0, ads: 0, content: 0, referral: 0, other: 0 } }
+                ]
+            },
+            {
+                category: "広告系",
+                text: "広告のROAS（広告費用対効果）はどうですか？",
+                options: [
+                    { text: "ROAS 300%以上で安定して利益が出ている", scores: { sns: 0, ads: 4, content: 0, referral: 0, other: 0 } },
+                    { text: "ROAS 150-300%でまあまあ", scores: { sns: 0, ads: 3, content: 0, referral: 0, other: 0 } },
+                    { text: "トントンか少し赤字", scores: { sns: 0, ads: 2, content: 0, referral: 0, other: 0 } },
+                    { text: "ROASを計測していない/広告未使用", scores: { sns: 0, ads: 1, content: 0, referral: 0, other: 0 } }
+                ]
+            },
+            // コンテンツ系 (Q6-8)
+            {
+                category: "コンテンツ系",
+                text: "ブログやYouTubeなどのコンテンツマーケティングを行っていますか？",
+                options: [
+                    { text: "定期的にコンテンツを発信し、検索流入も多い", scores: { sns: 0, ads: 0, content: 4, referral: 0, other: 0 } },
+                    { text: "コンテンツは作っているが流入は少ない", scores: { sns: 0, ads: 0, content: 3, referral: 0, other: 0 } },
+                    { text: "たまにコンテンツを作る程度", scores: { sns: 0, ads: 0, content: 2, referral: 0, other: 0 } },
+                    { text: "コンテンツマーケティングはしていない", scores: { sns: 0, ads: 0, content: 0, referral: 0, other: 0 } }
+                ]
+            },
+            {
+                category: "コンテンツ系",
+                text: "SEO（検索エンジン最適化）対策はどうですか？",
+                options: [
+                    { text: "狙ったキーワードで上位表示されている", scores: { sns: 0, ads: 0, content: 4, referral: 0, other: 0 } },
+                    { text: "SEOを意識してコンテンツを作っている", scores: { sns: 0, ads: 0, content: 3, referral: 0, other: 0 } },
+                    { text: "SEOの知識はあるが実践は少ない", scores: { sns: 0, ads: 0, content: 2, referral: 0, other: 0 } },
+                    { text: "SEO対策はしていない", scores: { sns: 0, ads: 0, content: 1, referral: 0, other: 0 } }
+                ]
+            },
+            {
+                category: "コンテンツ系",
+                text: "メルマガやLINE公式アカウントでの情報発信は？",
+                options: [
+                    { text: "週に複数回、価値ある情報を配信", scores: { sns: 0, ads: 0, content: 3, referral: 0, other: 2 } },
+                    { text: "週1回程度は配信している", scores: { sns: 0, ads: 0, content: 2, referral: 0, other: 1 } },
+                    { text: "たまに配信する程度", scores: { sns: 0, ads: 0, content: 1, referral: 0, other: 1 } },
+                    { text: "リストはあるがほぼ配信していない", scores: { sns: 0, ads: 0, content: 0, referral: 0, other: 0 } }
+                ]
+            },
+            // 紹介系 (Q9-10)
+            {
+                category: "紹介系",
+                text: "既存顧客からの紹介はどの程度ありますか？",
+                options: [
+                    { text: "紹介が主要な集客源になっている", scores: { sns: 0, ads: 0, content: 0, referral: 4, other: 0 } },
+                    { text: "定期的に紹介がある", scores: { sns: 0, ads: 0, content: 0, referral: 3, other: 0 } },
+                    { text: "たまに紹介がある", scores: { sns: 0, ads: 0, content: 0, referral: 2, other: 0 } },
+                    { text: "紹介はほとんどない", scores: { sns: 0, ads: 0, content: 0, referral: 1, other: 0 } }
+                ]
+            },
+            {
+                category: "紹介系",
+                text: "紹介を促進する仕組み（紹介制度、アフィリエイトなど）はありますか？",
+                options: [
+                    { text: "紹介制度があり積極的に運用中", scores: { sns: 0, ads: 0, content: 0, referral: 4, other: 0 } },
+                    { text: "紹介制度はあるがあまり活用されていない", scores: { sns: 0, ads: 0, content: 0, referral: 2, other: 0 } },
+                    { text: "紹介制度の導入を検討中", scores: { sns: 0, ads: 0, content: 0, referral: 1, other: 0 } },
+                    { text: "紹介の仕組みはない", scores: { sns: 0, ads: 0, content: 0, referral: 0, other: 0 } }
+                ]
+            },
+            // その他 (Q11-12)
+            {
+                category: "その他",
+                text: "オフラインでの集客（セミナー、交流会、営業など）は？",
+                options: [
+                    { text: "定期的にセミナーや交流会に参加/開催", scores: { sns: 0, ads: 0, content: 0, referral: 1, other: 4 } },
+                    { text: "たまにオフラインの機会を活用", scores: { sns: 0, ads: 0, content: 0, referral: 0, other: 3 } },
+                    { text: "オフライン活動は少ない", scores: { sns: 0, ads: 0, content: 0, referral: 0, other: 2 } },
+                    { text: "オンラインのみで活動", scores: { sns: 0, ads: 0, content: 0, referral: 0, other: 0 } }
+                ]
+            },
+            {
+                category: "その他",
+                text: "他社とのコラボや提携での集客は？",
+                options: [
+                    { text: "定期的にコラボ・提携を実施", scores: { sns: 0, ads: 0, content: 0, referral: 2, other: 4 } },
+                    { text: "過去にコラボ経験あり", scores: { sns: 0, ads: 0, content: 0, referral: 1, other: 2 } },
+                    { text: "興味はあるが実施したことがない", scores: { sns: 0, ads: 0, content: 0, referral: 0, other: 1 } },
+                    { text: "コラボは考えていない", scores: { sns: 0, ads: 0, content: 0, referral: 0, other: 0 } }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = [];
+        let scores = { sns: 0, ads: 0, content: 0, referral: 0, other: 0 };
+
+        function startDiagnosis() {
+            document.getElementById('introScreen').classList.add('hidden');
+            document.getElementById('questionScreen').classList.remove('hidden');
+            document.getElementById('totalQ').textContent = questions.length;
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
+            document.getElementById('questionNumber').textContent = `Q${currentQuestion + 1}`;
+            document.getElementById('questionCategory').textContent = q.category;
+            document.getElementById('questionText').textContent = q.text;
+
+            const progress = ((currentQuestion) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+
+            q.options.forEach((option, index) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.innerHTML = `
+                    <div class="option-marker"></div>
+                    <div class="option-text">${option.text}</div>
+                `;
+                div.onclick = () => selectOption(index);
+                container.appendChild(div);
+            });
+        }
+
+        function selectOption(index) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+
+            answers[currentQuestion] = index;
+            const selectedScores = questions[currentQuestion].options[index].scores;
+
+            // Update scores
+            Object.keys(selectedScores).forEach(key => {
+                scores[key] += selectedScores[key];
+            });
+
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    showQuestion();
+                } else {
+                    showResults();
+                }
+            }, 400);
+        }
+
+        function showResults() {
+            document.getElementById('questionScreen').classList.add('hidden');
+            document.getElementById('resultsScreen').style.display = 'block';
+
+            // Calculate percentages
+            const total = scores.sns + scores.ads + scores.content + scores.referral + scores.other;
+            const maxPossible = 50; // Approximate max score
+
+            const snsPct = Math.round((scores.sns / maxPossible) * 100);
+            const adsPct = Math.round((scores.ads / maxPossible) * 100);
+            const contentPct = Math.round((scores.content / maxPossible) * 100);
+            const referralPct = Math.round((scores.referral / maxPossible) * 100);
+            const otherPct = Math.round((scores.other / maxPossible) * 100);
+
+            // Animate bars
+            setTimeout(() => {
+                document.getElementById('snsBar').style.width = snsPct + '%';
+                document.getElementById('snsValue').textContent = snsPct + '%';
+
+                document.getElementById('adsBar').style.width = adsPct + '%';
+                document.getElementById('adsValue').textContent = adsPct + '%';
+
+                document.getElementById('contentBar').style.width = contentPct + '%';
+                document.getElementById('contentValue').textContent = contentPct + '%';
+
+                document.getElementById('referralBar').style.width = referralPct + '%';
+                document.getElementById('referralValue').textContent = referralPct + '%';
+
+                document.getElementById('otherBar').style.width = otherPct + '%';
+                document.getElementById('otherValue').textContent = otherPct + '%';
+            }, 300);
+
+            // Calculate diversity score
+            const channelCounts = [snsPct, adsPct, contentPct, referralPct, otherPct].filter(p => p > 20).length;
+            const avgScore = (snsPct + adsPct + contentPct + referralPct + otherPct) / 5;
+            const diversityScore = Math.min(100, Math.round(avgScore + (channelCounts * 10)));
+
+            document.getElementById('mainScore').textContent = diversityScore;
+
+            // Determine type
+            const maxChannel = Math.max(scores.sns, scores.ads, scores.content, scores.referral, scores.other);
+            let typeName, typeDesc;
+
+            if (channelCounts >= 4) {
+                typeName = "マルチチャネル型";
+                typeDesc = "複数のチャネルをバランスよく活用できています。各チャネルの相乗効果を高めることで、さらなる成長が期待できます。チャネル間の連携を強化しましょう。";
+            } else if (scores.sns === maxChannel) {
+                typeName = "SNS集客型";
+                typeDesc = "SNSを中心とした集客スタイルです。フォロワーとの関係構築が強みですが、広告やコンテンツマーケティングを追加することで、より安定した集客基盤を作れます。";
+            } else if (scores.ads === maxChannel) {
+                typeName = "広告集客型";
+                typeDesc = "広告を活用した集客が得意なタイプです。即効性のある集客ができていますが、コンテンツ資産や紹介の仕組みを構築することで、広告費に依存しない基盤も作りましょう。";
+            } else if (scores.content === maxChannel) {
+                typeName = "コンテンツ集客型";
+                typeDesc = "コンテンツを通じた集客が強みです。長期的な資産を構築できていますが、SNSや広告を組み合わせることで、コンテンツのリーチを拡大できます。";
+            } else if (scores.referral === maxChannel) {
+                typeName = "紹介集客型";
+                typeDesc = "既存顧客からの紹介が集客の柱になっています。信頼関係の構築が強みですが、新規開拓チャネルを増やすことで、さらなる成長が可能です。";
+            } else {
+                typeName = "これから型";
+                typeDesc = "まだ集客チャネルの構築途上です。まずは1つのチャネルに集中して成果を出し、そこから他のチャネルに展開していくことをおすすめします。";
+            }
+
+            document.getElementById('diagnosisTypeName').textContent = typeName;
+            document.getElementById('diagnosisTypeDesc').textContent = typeDesc;
+
+            // Generate recommendations
+            const recommendations = [];
+
+            if (scores.sns < 6) {
+                recommendations.push({
+                    title: "SNS活用の強化",
+                    desc: "毎日の発信とフォロワーとの交流を習慣化しましょう。まずは1つのプラットフォームに集中するのがおすすめです。"
+                });
+            }
+            if (scores.ads < 4) {
+                recommendations.push({
+                    title: "広告運用の検討",
+                    desc: "少額からテスト広告を始めてみましょう。正しく運用すれば、即効性のある集客手段になります。"
+                });
+            }
+            if (scores.content < 6) {
+                recommendations.push({
+                    title: "コンテンツ資産の構築",
+                    desc: "ブログやYouTubeなど、検索から見つけてもらえるコンテンツを増やしましょう。長期的な集客基盤になります。"
+                });
+            }
+            if (scores.referral < 4) {
+                recommendations.push({
+                    title: "紹介の仕組み作り",
+                    desc: "紹介制度を導入し、既存顧客からの紹介を促進しましょう。最も成約率の高い集客チャネルです。"
+                });
+            }
+            if (scores.other < 4) {
+                recommendations.push({
+                    title: "チャネルの多様化",
+                    desc: "オフラインの交流会やコラボレーションなど、新しい集客チャネルを開拓してみましょう。"
+                });
+            }
+
+            // Limit to 3 recommendations
+            const topRecommendations = recommendations.slice(0, 3);
+            const recContainer = document.getElementById('recommendationsList');
+            recContainer.innerHTML = topRecommendations.map((rec, i) => `
+                <div class="recommendation-item">
+                    <div class="recommendation-priority">${i + 1}</div>
+                    <div class="recommendation-content">
+                        <h4>${rec.title}</h4>
+                        <p>${rec.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

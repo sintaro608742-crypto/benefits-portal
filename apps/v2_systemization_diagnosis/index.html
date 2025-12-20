@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仕組み化レベル診断 | あなたのビジネスの自動化度を測定</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 1.8em;
+            background: linear-gradient(90deg, #00d4ff, #7b68ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: #aaa;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .intro-text {
+            line-height: 1.8;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            color: #00d4ff;
+            font-weight: bold;
+        }
+
+        .progress-container {
+            margin: 30px 0;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #7b68ee);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            color: #888;
+            font-size: 0.85em;
+        }
+
+        .category-label {
+            text-align: center;
+            padding: 10px 20px;
+            background: linear-gradient(90deg, rgba(0, 212, 255, 0.2), rgba(123, 104, 238, 0.2));
+            border-radius: 30px;
+            margin-bottom: 25px;
+            font-size: 0.9em;
+            color: #00d4ff;
+        }
+
+        .question-number {
+            font-size: 0.85em;
+            color: #7b68ee;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.15em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 18px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        .option.selected {
+            background: rgba(0, 212, 255, 0.15);
+            border-color: #00d4ff;
+        }
+
+        .option-circle {
+            width: 22px;
+            height: 22px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .option.selected .option-circle {
+            border-color: #00d4ff;
+            background: #00d4ff;
+        }
+
+        .option.selected .option-circle::after {
+            content: '✓';
+            color: #1a1a2e;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .option-text {
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #00d4ff, #7b68ee);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Results Section */
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .result-level {
+            font-size: 1em;
+            color: #00d4ff;
+            margin-bottom: 10px;
+        }
+
+        .result-title {
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .overall-score {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(123, 104, 238, 0.1));
+            border-radius: 20px;
+            margin: 25px 0;
+        }
+
+        .score-value {
+            font-size: 4em;
+            font-weight: bold;
+            background: linear-gradient(90deg, #00d4ff, #7b68ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-label {
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .radar-chart {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .radar-chart svg {
+            max-width: 100%;
+        }
+
+        .category-scores {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .category-score-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .category-score-label {
+            width: 120px;
+            font-size: 0.9em;
+            color: #ccc;
+        }
+
+        .category-score-bar {
+            flex: 1;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .category-score-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 1s ease;
+        }
+
+        .category-score-value {
+            width: 50px;
+            text-align: right;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        .weakness-section {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .weakness-title {
+            color: #ff6b6b;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .weakness-content {
+            color: #ccc;
+            line-height: 1.8;
+        }
+
+        .recommendations {
+            margin: 30px 0;
+        }
+
+        .rec-title {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #00d4ff;
+        }
+
+        .rec-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #7b68ee;
+        }
+
+        .rec-number {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(90deg, #00d4ff, #7b68ee);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: bold;
+            font-size: 0.85em;
+            margin-right: 10px;
+        }
+
+        .rec-heading {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .rec-detail {
+            color: #aaa;
+            font-size: 0.9em;
+            line-height: 1.7;
+            padding-left: 38px;
+        }
+
+        .level-description {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .level-title {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #7b68ee;
+        }
+
+        .level-text {
+            color: #ccc;
+            line-height: 1.8;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(123, 104, 238, 0.1));
+            border-radius: 20px;
+            margin-top: 30px;
+        }
+
+        .cta-title {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .cta-text {
+            color: #aaa;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
+            header {
+                padding: 30px 0;
+            }
+
+            .logo {
+                font-size: 2em;
+            }
+
+            h1 {
+                font-size: 1.4em;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .question-text {
+                font-size: 1.05em;
+            }
+
+            .option {
+                padding: 15px;
+            }
+
+            .score-value {
+                font-size: 3em;
+            }
+
+            .category-score-label {
+                width: 90px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">⚙️</div>
+            <h1>仕組み化レベル診断</h1>
+            <p class="subtitle">あなたのビジネスは何%自動化できていますか？<br>5つの領域から仕組み化レベルを測定します</p>
+        </header>
+
+        <!-- Intro Section -->
+        <div id="intro" class="card">
+            <p class="intro-text">
+                月収100万円を超えたら、次に必要なのは<span class="highlight">「あなたがいなくても回る仕組み」</span>です。
+            </p>
+            <p class="intro-text">
+                この診断では、ビジネスの5つの重要領域について<span class="highlight">仕組み化レベル</span>を測定。<br>
+                どこに「あなたの時間」が取られているかを可視化し、優先的に自動化すべきポイントを特定します。
+            </p>
+            <p class="intro-text">
+                <strong>診断時間：約3分 / 全15問</strong>
+            </p>
+            <button class="btn btn-primary" onclick="startDiagnosis()">診断を開始する</button>
+        </div>
+
+        <!-- Question Section -->
+        <div id="question-section" class="card hidden">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="progress-current">1</span>
+                    <span>15問</span>
+                </div>
+            </div>
+
+            <div class="category-label" id="category-label"></div>
+
+            <div class="question-number" id="question-number"></div>
+            <div class="question-text" id="question-text"></div>
+
+            <div class="options" id="options"></div>
+
+            <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" disabled>次の質問へ</button>
+        </div>
+
+        <!-- Result Section -->
+        <div id="result-section" class="hidden">
+            <div class="card">
+                <div class="result-header">
+                    <div class="result-level" id="result-level"></div>
+                    <div class="result-title" id="result-title"></div>
+                </div>
+
+                <div class="overall-score">
+                    <div class="score-value" id="overall-score">0</div>
+                    <div class="score-label">仕組み化スコア（100点満点）</div>
+                </div>
+
+                <div class="category-scores" id="category-scores"></div>
+            </div>
+
+            <div class="weakness-section" id="weakness-section">
+                <div class="weakness-title">⚠️ 最も改善が必要な領域</div>
+                <div class="weakness-content" id="weakness-content"></div>
+            </div>
+
+            <div class="card">
+                <div class="level-description" id="level-description"></div>
+
+                <div class="recommendations">
+                    <div class="rec-title">💡 仕組み化を進めるための3ステップ</div>
+                    <div id="recommendations"></div>
+                </div>
+            </div>
+
+            <div class="cta-section">
+                <div class="cta-title">仕組み化を本格的に進めたい方へ</div>
+                <p class="cta-text">あなたのビジネスに最適な仕組み化戦略を<br>個別にアドバイスします</p>
+                <button class="btn btn-primary" onclick="location.reload()">もう一度診断する</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const categories = [
+            { id: 'marketing', name: '集客・マーケティング', color: '#00d4ff' },
+            { id: 'sales', name: 'セールス', color: '#7b68ee' },
+            { id: 'delivery', name: 'サービス提供', color: '#ff6b6b' },
+            { id: 'management', name: '顧客管理', color: '#ffd93d' },
+            { id: 'finance', name: '財務・経理', color: '#6bcb77' }
+        ];
+
+        const questions = [
+            // 集客・マーケティング (3問)
+            {
+                category: 0,
+                text: '新規見込み客の獲得について、最も当てはまるものは？',
+                options: [
+                    { text: '自分で毎日SNS投稿や営業活動をしている', score: 1 },
+                    { text: '広告やSEOで半自動だが、改善は自分で行う', score: 2 },
+                    { text: '仕組みがあり、定期的な確認だけで回る', score: 3 },
+                    { text: '完全に自動化され、ほぼ手をかけていない', score: 4 }
+                ]
+            },
+            {
+                category: 0,
+                text: '見込み客の教育（ナーチャリング）はどうしていますか？',
+                options: [
+                    { text: '個別にDMやメールで対応している', score: 1 },
+                    { text: 'メルマガはあるが、内容作成は毎回手動', score: 2 },
+                    { text: 'ステップメールやLINE配信で自動化済み', score: 3 },
+                    { text: '複数チャネルで自動化＋ABテストも実施', score: 4 }
+                ]
+            },
+            {
+                category: 0,
+                text: 'コンテンツ制作（ブログ、SNS、動画など）の状況は？',
+                options: [
+                    { text: '全て自分で作成している', score: 1 },
+                    { text: '外注やツールを使うが、ディレクションは全て自分', score: 2 },
+                    { text: 'チームや外注で回り、確認だけすればOK', score: 3 },
+                    { text: '仕組み化され、自分はほぼノータッチ', score: 4 }
+                ]
+            },
+            // セールス (3問)
+            {
+                category: 1,
+                text: 'セールス・クロージングはどのように行っていますか？',
+                options: [
+                    { text: '全ての商談を自分で行っている', score: 1 },
+                    { text: '一部はスタッフに任せるが、高額商品は自分', score: 2 },
+                    { text: 'セールスチームがあり、自分は例外対応のみ', score: 3 },
+                    { text: 'セールスは完全に委譲、数字確認だけ', score: 4 }
+                ]
+            },
+            {
+                category: 1,
+                text: '見込み客への提案・見積もりの作成は？',
+                options: [
+                    { text: '毎回ゼロから作成している', score: 1 },
+                    { text: 'テンプレートはあるが、カスタマイズは手動', score: 2 },
+                    { text: 'ほぼ自動生成、微調整だけで完成', score: 3 },
+                    { text: '完全自動化、確認だけすればOK', score: 4 }
+                ]
+            },
+            {
+                category: 1,
+                text: 'セールスのトーク・スクリプトは整備されていますか？',
+                options: [
+                    { text: 'ない、毎回アドリブで対応', score: 1 },
+                    { text: '自分用のメモ程度はある', score: 2 },
+                    { text: 'スクリプトがあり、他の人でも再現可能', score: 3 },
+                    { text: '動画マニュアル含め完全に体系化済み', score: 4 }
+                ]
+            },
+            // サービス提供 (3問)
+            {
+                category: 2,
+                text: 'サービス・商品の提供はどのように行っていますか？',
+                options: [
+                    { text: '全てを自分で直接提供している', score: 1 },
+                    { text: '一部はスタッフや外注だが、重要な部分は自分', score: 2 },
+                    { text: 'チームで回り、自分は品質チェックのみ', score: 3 },
+                    { text: '完全にチームで運営、自分は不要', score: 4 }
+                ]
+            },
+            {
+                category: 2,
+                text: 'サービス提供のマニュアル・手順書は整備されていますか？',
+                options: [
+                    { text: 'ない、自分の頭の中にしかない', score: 1 },
+                    { text: '簡単なメモ程度はある', score: 2 },
+                    { text: '詳細なマニュアルがあり、他の人でも対応可能', score: 3 },
+                    { text: '動画含め完全整備、新人でもすぐ習得可能', score: 4 }
+                ]
+            },
+            {
+                category: 2,
+                text: 'クレーム・問い合わせ対応の状況は？',
+                options: [
+                    { text: '全て自分で対応している', score: 1 },
+                    { text: 'FAQはあるが、複雑な案件は自分で対応', score: 2 },
+                    { text: 'チームで対応、自分はエスカレーション時のみ', score: 3 },
+                    { text: '完全にチーム対応、自分への報告も最小限', score: 4 }
+                ]
+            },
+            // 顧客管理 (3問)
+            {
+                category: 3,
+                text: '顧客情報の管理はどのように行っていますか？',
+                options: [
+                    { text: 'Excelやメモで、自分だけが把握している', score: 1 },
+                    { text: 'CRMはあるが、入力や更新は自分がやっている', score: 2 },
+                    { text: 'CRMで一元管理、チームで共有・運用', score: 3 },
+                    { text: '自動連携含め完全システム化済み', score: 4 }
+                ]
+            },
+            {
+                category: 3,
+                text: 'リピーター・継続顧客へのフォローは？',
+                options: [
+                    { text: '特にしていない、または都度手動で連絡', score: 1 },
+                    { text: '定期的にメールするが、内容は毎回手作り', score: 2 },
+                    { text: '自動配信でフォロー、開封率なども管理', score: 3 },
+                    { text: '完全自動化、離脱予防アラートも設定済み', score: 4 }
+                ]
+            },
+            {
+                category: 3,
+                text: '顧客からの予約・申込管理は？',
+                options: [
+                    { text: 'メールやDMで受付、手動でカレンダー登録', score: 1 },
+                    { text: '予約システムはあるが、確認は毎回自分', score: 2 },
+                    { text: '自動予約＋リマインド送信まで自動', score: 3 },
+                    { text: '決済連携含め完全自動化、ノータッチ', score: 4 }
+                ]
+            },
+            // 財務・経理 (3問)
+            {
+                category: 4,
+                text: '請求書の発行・入金管理は？',
+                options: [
+                    { text: '毎回手動で作成・送付・確認している', score: 1 },
+                    { text: 'テンプレートはあるが、発行・確認は手動', score: 2 },
+                    { text: '自動発行、入金確認もほぼ自動', score: 3 },
+                    { text: '完全自動化、督促も自動で実行', score: 4 }
+                ]
+            },
+            {
+                category: 4,
+                text: '経費精算・記帳の状況は？',
+                options: [
+                    { text: '溜め込んで、まとめて自分で処理', score: 1 },
+                    { text: '会計ソフトは使うが、入力は全て手動', score: 2 },
+                    { text: '自動連携あり、確認作業だけでOK', score: 3 },
+                    { text: '経理担当or税理士に完全委託', score: 4 }
+                ]
+            },
+            {
+                category: 4,
+                text: '収支・キャッシュフローの把握は？',
+                options: [
+                    { text: '正直よく分かっていない', score: 1 },
+                    { text: '月末にまとめて確認する程度', score: 2 },
+                    { text: 'ダッシュボードでリアルタイム確認可能', score: 3 },
+                    { text: '自動レポート＋異常値アラート設定済み', score: 4 }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = [];
+        let categoryScores = [0, 0, 0, 0, 0];
+
+        function startDiagnosis() {
+            document.getElementById('intro').classList.add('hidden');
+            document.getElementById('question-section').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            const category = categories[q.category];
+
+            document.getElementById('progress-fill').style.width = ((currentQuestion + 1) / questions.length * 100) + '%';
+            document.getElementById('progress-current').textContent = currentQuestion + 1;
+            document.getElementById('category-label').textContent = category.name;
+            document.getElementById('category-label').style.color = category.color;
+            document.getElementById('question-number').textContent = `Q${currentQuestion + 1}`;
+            document.getElementById('question-text').textContent = q.text;
+
+            const optionsHtml = q.options.map((opt, idx) => `
+                <div class="option" onclick="selectOption(${idx})">
+                    <div class="option-circle"></div>
+                    <span class="option-text">${opt.text}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('options').innerHTML = optionsHtml;
+            document.getElementById('next-btn').disabled = true;
+
+            if (currentQuestion === questions.length - 1) {
+                document.getElementById('next-btn').textContent = '診断結果を見る';
+            }
+        }
+
+        function selectOption(idx) {
+            document.querySelectorAll('.option').forEach((opt, i) => {
+                opt.classList.toggle('selected', i === idx);
+            });
+            answers[currentQuestion] = idx;
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            const q = questions[currentQuestion];
+            const selectedOption = q.options[answers[currentQuestion]];
+            categoryScores[q.category] += selectedOption.score;
+
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('question-section').classList.add('hidden');
+            document.getElementById('result-section').classList.remove('hidden');
+
+            // Calculate scores (each category has 3 questions, max 12 points each)
+            const maxPerCategory = 12;
+            const categoryPercentages = categoryScores.map(s => Math.round(s / maxPerCategory * 100));
+            const overallScore = Math.round(categoryScores.reduce((a, b) => a + b, 0) / (maxPerCategory * 5) * 100);
+
+            // Animate overall score
+            let currentScore = 0;
+            const scoreInterval = setInterval(() => {
+                currentScore += 2;
+                if (currentScore >= overallScore) {
+                    currentScore = overallScore;
+                    clearInterval(scoreInterval);
+                }
+                document.getElementById('overall-score').textContent = currentScore;
+            }, 30);
+
+            // Determine level
+            let level, title, description;
+            if (overallScore >= 85) {
+                level = 'レベル5: 完全自動化';
+                title = 'あなたは「経営者」として完成しています';
+                description = 'ほぼ全ての業務が仕組み化され、あなたの時間は戦略と創造に使えています。次のステージは、この仕組みを他の事業や投資に横展開することです。';
+            } else if (overallScore >= 70) {
+                level = 'レベル4: 高度な仕組み化';
+                title = 'あと一歩で「完全自動化」が見えています';
+                description = '多くの業務が仕組み化できていますが、まだ一部で「あなたでなければ」という部分が残っています。その領域を特定し、最後の仕組み化に取り組みましょう。';
+            } else if (overallScore >= 50) {
+                level = 'レベル3: 部分的な仕組み化';
+                title = '仕組み化の「伸びしろ」が大きい状態です';
+                description = '一部は仕組み化できていますが、まだ多くの業務であなたの時間が使われています。優先順位をつけて、段階的に仕組み化を進めることで大きく変わります。';
+            } else if (overallScore >= 30) {
+                level = 'レベル2: 初期段階';
+                title = 'ビジネスの大半が「あなた依存」です';
+                description = '現状、あなたが動かないとビジネスが止まる状態です。まずは最も時間を取られている業務から仕組み化を始めましょう。';
+            } else {
+                level = 'レベル1: 個人事業状態';
+                title = '仕組み化はほぼゼロの状態です';
+                description = '全てを自分でやっている「職人型」の状態です。このままでは成長に限界があります。一つずつ仕組み化を始める時です。';
+            }
+
+            document.getElementById('result-level').textContent = level;
+            document.getElementById('result-title').textContent = title;
+            document.getElementById('level-description').innerHTML = `
+                <div class="level-title">あなたの仕組み化ステージ</div>
+                <div class="level-text">${description}</div>
+            `;
+
+            // Display category scores
+            const scoresHtml = categories.map((cat, i) => `
+                <div class="category-score-item">
+                    <div class="category-score-label">${cat.name}</div>
+                    <div class="category-score-bar">
+                        <div class="category-score-fill" style="width: ${categoryPercentages[i]}%; background: ${cat.color};"></div>
+                    </div>
+                    <div class="category-score-value">${categoryPercentages[i]}%</div>
+                </div>
+            `).join('');
+            document.getElementById('category-scores').innerHTML = scoresHtml;
+
+            // Find weakest category
+            const minIdx = categoryPercentages.indexOf(Math.min(...categoryPercentages));
+            const weakestCategory = categories[minIdx];
+
+            const weaknessMessages = {
+                0: `<strong>集客・マーケティング</strong>があなたのボトルネックです。<br><br>新規見込み客の獲得に多くの時間を使っているようです。広告、SEO、コンテンツマーケティングの自動化、または外注化を検討しましょう。「毎日SNS投稿しなければ」という状態から脱却することが第一歩です。`,
+                1: `<strong>セールス</strong>があなたのボトルネックです。<br><br>商談やクロージングに多くの時間を使っているようです。セールススクリプトの整備、セールス担当の育成、または高額商品以外の自動化（動画セールスなど）を検討しましょう。`,
+                2: `<strong>サービス提供</strong>があなたのボトルネックです。<br><br>サービスの提供自体に多くの時間を使っているようです。マニュアル整備、動画教材化、チームメンバーへの権限移譲を進めましょう。「あなたでなければできない」を減らすことが重要です。`,
+                3: `<strong>顧客管理</strong>があなたのボトルネックです。<br><br>顧客対応や管理に多くの時間を使っているようです。CRMの導入・活用、自動フォローアップの設定、予約システムの導入を検討しましょう。`,
+                4: `<strong>財務・経理</strong>があなたのボトルネックです。<br><br>請求書発行や経費処理に時間を取られているようです。会計ソフトの自動連携、経理業務の外注、税理士への完全委託を検討しましょう。`
+            };
+
+            document.getElementById('weakness-content').innerHTML = weaknessMessages[minIdx];
+
+            // Recommendations based on overall score and weakness
+            const recommendations = getRecommendations(overallScore, minIdx);
+            const recHtml = recommendations.map((rec, i) => `
+                <div class="rec-item">
+                    <div class="rec-heading">
+                        <span class="rec-number">${i + 1}</span>
+                        ${rec.title}
+                    </div>
+                    <div class="rec-detail">${rec.detail}</div>
+                </div>
+            `).join('');
+            document.getElementById('recommendations').innerHTML = recHtml;
+        }
+
+        function getRecommendations(score, weakIdx) {
+            const baseRecs = [];
+
+            // Based on weakness
+            const weaknessRecs = {
+                0: { title: '集客の自動化パイプラインを構築する', detail: '広告→LP→ステップメール/LINE→セールスページという流れを自動化。一度構築すれば、広告費に応じて見込み客が自動で集まる仕組みを作りましょう。' },
+                1: { title: 'セールスプロセスを「複製可能」にする', detail: 'セールストークを録画・スクリプト化し、他の人でも再現できる状態に。動画セールスレターの活用も効果的です。' },
+                2: { title: 'サービス提供をマニュアル化・動画化する', detail: '「自分にしかできない」と思っていることを言語化し、他の人でもできる形に落とし込む。最初は時間がかかりますが、一度作れば資産になります。' },
+                3: { title: 'CRM/顧客管理ツールを導入・活用する', detail: '顧客情報を一元管理し、フォローアップを自動化。離脱防止のアラートや、アップセルのタイミング通知も設定しましょう。' },
+                4: { title: '経理業務を外部に完全委託する', detail: '税理士やオンライン経理サービスを活用し、経理業務から完全に手を離す。月1回の報告を受けるだけの状態を目指しましょう。' }
+            };
+
+            baseRecs.push(weaknessRecs[weakIdx]);
+
+            // Based on overall score
+            if (score < 50) {
+                baseRecs.push({
+                    title: '「時間の棚卸し」から始める',
+                    detail: '1週間、自分の時間の使い方を全て記録してください。どの業務に何時間使っているかを可視化することで、仕組み化の優先順位が明確になります。'
+                });
+                baseRecs.push({
+                    title: '最も時間を取られている1つだけに集中',
+                    detail: '全てを一度に仕組み化しようとせず、最も時間を取られている業務1つだけに集中。1ヶ月で1つ、着実に仕組み化を進めましょう。'
+                });
+            } else if (score < 70) {
+                baseRecs.push({
+                    title: 'チームメンバーへの権限移譲を進める',
+                    detail: '仕組みがあっても「最終確認は自分」になっていませんか？信頼して任せる範囲を広げ、あなたは「例外対応」だけに関わる状態を目指しましょう。'
+                });
+                baseRecs.push({
+                    title: '週1の「仕組み化タイム」を確保する',
+                    detail: '毎週2時間、必ず「仕組み化のための作業」の時間を確保。マニュアル作成、ツール導入、外注先との連携など、未来への投資時間です。'
+                });
+            } else {
+                baseRecs.push({
+                    title: '「自分がいなくても1ヶ月回るか」をテスト',
+                    detail: '実際に1週間〜1ヶ月、日常業務から完全に離れてみてください。そこで見えてきた課題が、最後の仕組み化ポイントです。'
+                });
+                baseRecs.push({
+                    title: 'この仕組みを次の事業に横展開する',
+                    detail: 'あなたが構築した仕組みは、そのまま他の事業や他の人にも適用できる「型」です。この型を活かして、新規事業や投資を検討しましょう。'
+                });
+            }
+
+            return baseRecs;
+        }
+    </script>
+</body>
+</html>

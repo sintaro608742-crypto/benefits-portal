@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>月収ステージ突破診断</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ffd700, #ffaa00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #aaa;
+            font-size: 0.95rem;
+        }
+
+        .start-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .start-screen .icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .start-screen h2 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+
+        .start-screen p {
+            color: #bbb;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .btn {
+            background: linear-gradient(90deg, #ffd700, #ffaa00);
+            color: #1a1a2e;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .question-screen {
+            display: none;
+        }
+
+        .progress-bar {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #ffd700, #ffaa00);
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        .question-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .question-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            background: rgba(255,255,255,0.08);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .option:hover {
+            background: rgba(255,215,0,0.1);
+            border-color: rgba(255,215,0,0.3);
+        }
+
+        .option.selected {
+            background: rgba(255,215,0,0.15);
+            border-color: #ffd700;
+        }
+
+        .result-screen {
+            display: none;
+        }
+
+        .result-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .result-header .stage {
+            font-size: 1rem;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .result-header h2 {
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+        }
+
+        .result-header .subtitle {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            color: #ffd700;
+            margin: 25px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,215,0,0.3);
+        }
+
+        .bottleneck {
+            background: rgba(255,100,100,0.1);
+            border-left: 4px solid #ff6b6b;
+            padding: 15px 20px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 15px;
+        }
+
+        .bottleneck h4 {
+            color: #ff6b6b;
+            margin-bottom: 8px;
+        }
+
+        .bottleneck p {
+            color: #ccc;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .strategy {
+            background: rgba(255,215,0,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 12px;
+        }
+
+        .strategy-num {
+            display: inline-block;
+            background: #ffd700;
+            color: #1a1a2e;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            margin-right: 10px;
+        }
+
+        .strategy h4 {
+            display: inline;
+            font-size: 1rem;
+        }
+
+        .strategy p {
+            color: #bbb;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            margin-left: 38px;
+            line-height: 1.6;
+        }
+
+        .next-action {
+            background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,170,0,0.1));
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .next-action h4 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        .next-action p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .retry-btn {
+            display: block;
+            width: 100%;
+            margin-top: 30px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 15px;
+            font-size: 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .retry-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .score-display {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .score-circle.revenue {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #1a1a2e;
+        }
+
+        .score-circle.system {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: #1a1a2e;
+        }
+
+        .score-circle.time {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            color: #1a1a2e;
+        }
+
+        .score-label {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .question-card h3 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>月収ステージ突破診断</h1>
+            <p>10問であなたのボトルネックと突破戦略がわかる</p>
+        </div>
+
+        <!-- スタート画面 -->
+        <div class="start-screen" id="startScreen">
+            <div class="icon">📊</div>
+            <h2>次のステージへ行くために<br>今、何をすべきか？</h2>
+            <p>
+                月収100万円を超えたのに<br>
+                なぜか頭打ち感がある...<br><br>
+                10問の質問に答えるだけで<br>
+                あなたの「ボトルネック」と<br>
+                「突破するための戦略」がわかります
+            </p>
+            <button class="btn" onclick="startDiagnosis()">診断スタート</button>
+        </div>
+
+        <!-- 質問画面 -->
+        <div class="question-screen" id="questionScreen">
+            <div class="progress-text" id="progressText">質問 1 / 10</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 10%"></div>
+            </div>
+
+            <div class="question-card">
+                <h3 id="questionText"></h3>
+                <div class="options" id="options"></div>
+            </div>
+        </div>
+
+        <!-- 結果画面 -->
+        <div class="result-screen" id="resultScreen">
+            <div class="result-card">
+                <div class="result-header">
+                    <div class="stage" id="currentStage"></div>
+                    <h2 id="resultTitle"></h2>
+                    <div class="subtitle" id="resultSubtitle"></div>
+                </div>
+
+                <div class="score-display">
+                    <div class="score-item">
+                        <div class="score-circle revenue" id="revenueScore">-</div>
+                        <div class="score-label">収益力</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-circle system" id="systemScore">-</div>
+                        <div class="score-label">仕組み化</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-circle time" id="timeScore">-</div>
+                        <div class="score-label">時間効率</div>
+                    </div>
+                </div>
+
+                <div class="section-title">🔍 あなたのボトルネック</div>
+                <div id="bottleneckArea"></div>
+
+                <div class="section-title">💡 突破戦略</div>
+                <div id="strategyArea"></div>
+
+                <div class="next-action">
+                    <h4>📌 今すぐやるべきこと</h4>
+                    <p id="nextAction"></p>
+                </div>
+            </div>
+
+            <button class="retry-btn" onclick="retry()">もう一度診断する</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                text: "現在の月収はどのくらいですか？",
+                options: [
+                    { text: "100万円未満", scores: { revenue: 1, system: 0, time: 0 } },
+                    { text: "100〜150万円", scores: { revenue: 2, system: 0, time: 0 } },
+                    { text: "150〜300万円", scores: { revenue: 3, system: 0, time: 0 } },
+                    { text: "300万円以上", scores: { revenue: 4, system: 0, time: 0 } }
+                ]
+            },
+            {
+                text: "収益の主な構造はどれに近いですか？",
+                options: [
+                    { text: "自分が動かないと売上が立たない", scores: { revenue: 0, system: 1, time: 1 } },
+                    { text: "半分は仕組み化、半分は労働", scores: { revenue: 0, system: 2, time: 2 } },
+                    { text: "ほぼ仕組み化できている", scores: { revenue: 0, system: 4, time: 3 } },
+                    { text: "完全に自動化されている", scores: { revenue: 0, system: 5, time: 4 } }
+                ]
+            },
+            {
+                text: "メイン商品の単価はいくらですか？",
+                options: [
+                    { text: "5万円未満", scores: { revenue: 1, system: 0, time: 0 } },
+                    { text: "5〜30万円", scores: { revenue: 2, system: 0, time: 0 } },
+                    { text: "30〜100万円", scores: { revenue: 3, system: 0, time: 0 } },
+                    { text: "100万円以上", scores: { revenue: 4, system: 0, time: 0 } }
+                ]
+            },
+            {
+                text: "週の労働時間はどのくらいですか？",
+                options: [
+                    { text: "60時間以上（毎日10時間超）", scores: { revenue: 0, system: 0, time: 1 } },
+                    { text: "40〜60時間", scores: { revenue: 0, system: 0, time: 2 } },
+                    { text: "20〜40時間", scores: { revenue: 0, system: 0, time: 3 } },
+                    { text: "20時間未満", scores: { revenue: 0, system: 0, time: 5 } }
+                ]
+            },
+            {
+                text: "チーム・外注の状況は？",
+                options: [
+                    { text: "完全に一人でやっている", scores: { revenue: 0, system: 1, time: 1 } },
+                    { text: "単発で外注することがある", scores: { revenue: 0, system: 2, time: 2 } },
+                    { text: "継続的な外注先がいる", scores: { revenue: 0, system: 3, time: 3 } },
+                    { text: "チームがあり、任せている", scores: { revenue: 0, system: 4, time: 4 } }
+                ]
+            },
+            {
+                text: "新規集客はどうしていますか？",
+                options: [
+                    { text: "紹介や口コミが中心", scores: { revenue: 2, system: 1, time: 2 } },
+                    { text: "SNS発信（自分で運用）", scores: { revenue: 2, system: 2, time: 1 } },
+                    { text: "広告運用している", scores: { revenue: 3, system: 3, time: 3 } },
+                    { text: "複数の集客チャネルを自動化", scores: { revenue: 4, system: 4, time: 4 } }
+                ]
+            },
+            {
+                text: "リピート・継続収入の割合は？",
+                options: [
+                    { text: "ほぼない（毎月新規頼み）", scores: { revenue: 1, system: 1, time: 1 } },
+                    { text: "売上の20〜40%", scores: { revenue: 2, system: 2, time: 2 } },
+                    { text: "売上の40〜60%", scores: { revenue: 3, system: 3, time: 3 } },
+                    { text: "売上の60%以上", scores: { revenue: 4, system: 4, time: 4 } }
+                ]
+            },
+            {
+                text: "売上を2倍にするとしたら、何が必要？",
+                options: [
+                    { text: "自分の稼働時間を2倍にする", scores: { revenue: 1, system: 1, time: 0 } },
+                    { text: "単価を上げる", scores: { revenue: 3, system: 2, time: 2 } },
+                    { text: "人を増やす・外注する", scores: { revenue: 2, system: 3, time: 3 } },
+                    { text: "仕組みを増やせば自動で増える", scores: { revenue: 4, system: 4, time: 4 } }
+                ]
+            },
+            {
+                text: "今、一番の悩みは？",
+                options: [
+                    { text: "時間がない・忙しすぎる", scores: { revenue: 0, system: 0, time: 0 }, bottleneck: "time" },
+                    { text: "売上が頭打ち", scores: { revenue: 0, system: 0, time: 0 }, bottleneck: "revenue" },
+                    { text: "人に任せられない", scores: { revenue: 0, system: 0, time: 0 }, bottleneck: "system" },
+                    { text: "次に何をすればいいかわからない", scores: { revenue: 0, system: 0, time: 0 }, bottleneck: "vision" }
+                ]
+            },
+            {
+                text: "AIツールの活用状況は？",
+                options: [
+                    { text: "ほとんど使っていない", scores: { revenue: 0, system: 1, time: 1 } },
+                    { text: "たまに使う程度", scores: { revenue: 0, system: 2, time: 2 } },
+                    { text: "日常的に活用している", scores: { revenue: 0, system: 3, time: 3 } },
+                    { text: "業務の自動化に組み込んでいる", scores: { revenue: 0, system: 5, time: 4 } }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let scores = { revenue: 0, system: 0, time: 0 };
+        let mainBottleneck = null;
+
+        function startDiagnosis() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('questionScreen').style.display = 'block';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('questionText').textContent = q.text;
+            document.getElementById('progressText').textContent = `質問 ${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('progressFill').style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+
+            q.options.forEach((opt, index) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.textContent = opt.text;
+                div.onclick = () => selectOption(index);
+                optionsDiv.appendChild(div);
+            });
+        }
+
+        function selectOption(index) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+
+            const selected = questions[currentQuestion].options[index];
+            scores.revenue += selected.scores.revenue;
+            scores.system += selected.scores.system;
+            scores.time += selected.scores.time;
+
+            if (selected.bottleneck) {
+                mainBottleneck = selected.bottleneck;
+            }
+
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }, 300);
+        }
+
+        function showResult() {
+            document.getElementById('questionScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+
+            // スコア表示
+            const maxScore = 25;
+            const revenuePercent = Math.min(Math.round((scores.revenue / maxScore) * 100), 100);
+            const systemPercent = Math.min(Math.round((scores.system / maxScore) * 100), 100);
+            const timePercent = Math.min(Math.round((scores.time / maxScore) * 100), 100);
+
+            document.getElementById('revenueScore').textContent = revenuePercent;
+            document.getElementById('systemScore').textContent = systemPercent;
+            document.getElementById('timeScore').textContent = timePercent;
+
+            // ステージ判定
+            const totalScore = scores.revenue + scores.system + scores.time;
+            let stage, title, subtitle;
+
+            if (totalScore >= 50) {
+                stage = "ステージ4：自動成長フェーズ";
+                title = "仕組みが回り始めています";
+                subtitle = "さらなる最適化で月収500万〜1000万へ";
+            } else if (totalScore >= 35) {
+                stage = "ステージ3：拡大フェーズ";
+                title = "300万円突破が見えています";
+                subtitle = "あと一歩の仕組み化がカギ";
+            } else if (totalScore >= 20) {
+                stage = "ステージ2：成長フェーズ";
+                title = "100万→300万の壁に挑戦中";
+                subtitle = "ボトルネックを解消すれば突破できます";
+            } else {
+                stage = "ステージ1：基盤構築フェーズ";
+                title = "まずは土台を固める時期";
+                subtitle = "仕組み化の第一歩を踏み出しましょう";
+            }
+
+            document.getElementById('currentStage').textContent = stage;
+            document.getElementById('resultTitle').textContent = title;
+            document.getElementById('resultSubtitle').textContent = subtitle;
+
+            // ボトルネック判定
+            if (!mainBottleneck) {
+                const minScore = Math.min(scores.revenue, scores.system, scores.time);
+                if (scores.time === minScore) mainBottleneck = "time";
+                else if (scores.system === minScore) mainBottleneck = "system";
+                else mainBottleneck = "revenue";
+            }
+
+            const bottlenecks = {
+                time: {
+                    title: "時間のボトルネック",
+                    desc: "忙しすぎて新しいことに着手できない状態。自分がボトルネックになっており、売上に上限ができています。"
+                },
+                system: {
+                    title: "仕組み化のボトルネック",
+                    desc: "属人的な業務が多く、人に任せられない状態。売上は上がっても、労働時間も比例して増えてしまいます。"
+                },
+                revenue: {
+                    title: "収益構造のボトルネック",
+                    desc: "単価が低い、またはリピートが少ない状態。たくさん働いても収益が伸びにくい構造になっています。"
+                },
+                vision: {
+                    title: "ビジョンのボトルネック",
+                    desc: "次に何をすべきか不明確な状態。目標が曖昧なため、行動が分散してしまっています。"
+                }
+            };
+
+            const bn = bottlenecks[mainBottleneck];
+            document.getElementById('bottleneckArea').innerHTML = `
+                <div class="bottleneck">
+                    <h4>${bn.title}</h4>
+                    <p>${bn.desc}</p>
+                </div>
+            `;
+
+            // 戦略提案
+            const strategies = {
+                time: [
+                    { title: "業務の棚卸しを行う", desc: "1週間の全タスクを書き出し、「自分しかできない」「任せられる」「やめられる」に分類する" },
+                    { title: "AIツールで時短を図る", desc: "ChatGPTやClaudeで、メール作成・リサーチ・資料作成を自動化する" },
+                    { title: "最初の外注を始める", desc: "まず1つの業務を外注化。事務作業や単純作業から始めるのがおすすめ" }
+                ],
+                system: [
+                    { title: "売れる仕組みを先に作る", desc: "集客→教育→販売の流れを自動化。LPとステップメールの構築が最優先" },
+                    { title: "マニュアルを作る", desc: "自分の業務を動画や文書で記録。これが外注・採用の土台になる" },
+                    { title: "継続課金モデルを検討", desc: "サブスクや会員制で、毎月の売上ベースを確保する" }
+                ],
+                revenue: [
+                    { title: "高単価商品を設計する", desc: "30万〜100万円の商品ラインナップを追加。価値の言語化がカギ" },
+                    { title: "バックエンドを用意する", desc: "既存顧客に対して、より深いサポートを高単価で提供する" },
+                    { title: "値上げを実行する", desc: "現在の価格は適正か？価値に見合った価格設定を再検討" }
+                ],
+                vision: [
+                    { title: "3年後の理想を描く", desc: "売上・時間・ライフスタイルの観点で、理想の状態を具体的に書き出す" },
+                    { title: "逆算で今月のゴールを決める", desc: "3年後から逆算して、今月やるべき「1つのこと」を決める" },
+                    { title: "メンターや仲間を見つける", desc: "同じステージ以上の起業家との接点を持ち、視野を広げる" }
+                ]
+            };
+
+            const strats = strategies[mainBottleneck];
+            let stratHtml = '';
+            strats.forEach((s, i) => {
+                stratHtml += `
+                    <div class="strategy">
+                        <span class="strategy-num">${i + 1}</span>
+                        <h4>${s.title}</h4>
+                        <p>${s.desc}</p>
+                    </div>
+                `;
+            });
+            document.getElementById('strategyArea').innerHTML = stratHtml;
+
+            // 次のアクション
+            const nextActions = {
+                time: "今週中に、1週間の全タスクを書き出してください。それが時間解放の第一歩です。",
+                system: "まず売上に直結する「集客→販売」の流れを1つ、自動化してみてください。",
+                revenue: "今の商品より高単価な「松コース」を1つ設計してみてください。",
+                vision: "紙とペンを用意して、「3年後の理想の1日」を具体的に書いてみてください。"
+            };
+            document.getElementById('nextAction').textContent = nextActions[mainBottleneck];
+        }
+
+        function retry() {
+            currentQuestion = 0;
+            scores = { revenue: 0, system: 0, time: 0 };
+            mainBottleneck = null;
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>法人化タイミング診断 | 今が法人成りのベストタイミング？</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 1.8em;
+            background: linear-gradient(90deg, #ffd700, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: #aaa;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .intro-text {
+            line-height: 1.8;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .check-list {
+            margin: 20px 0;
+            padding-left: 0;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            color: #ccc;
+        }
+
+        .check-icon {
+            color: #ffd700;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .progress-container {
+            margin: 30px 0;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ff8c00);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            color: #888;
+            font-size: 0.85em;
+        }
+
+        .question-number {
+            font-size: 0.85em;
+            color: #ff8c00;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.15em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 18px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        .option.selected {
+            background: rgba(255, 215, 0, 0.15);
+            border-color: #ffd700;
+        }
+
+        .option-circle {
+            width: 22px;
+            height: 22px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .option.selected .option-circle {
+            border-color: #ffd700;
+            background: #ffd700;
+        }
+
+        .option.selected .option-circle::after {
+            content: '✓';
+            color: #0f0f23;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .option-text {
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #ffd700, #ff8c00);
+            color: #0f0f23;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Results Section */
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .result-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .badge-now {
+            background: linear-gradient(90deg, #ffd700, #ff8c00);
+            color: #0f0f23;
+        }
+
+        .badge-soon {
+            background: rgba(0, 212, 255, 0.3);
+            color: #00d4ff;
+            border: 1px solid #00d4ff;
+        }
+
+        .badge-wait {
+            background: rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .result-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .result-summary {
+            color: #ccc;
+            line-height: 1.8;
+        }
+
+        .score-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .score-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .score-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .score-label {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .factor-section {
+            margin: 25px 0;
+        }
+
+        .factor-title {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+
+        .factor-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .factor-name {
+            color: #ccc;
+        }
+
+        .factor-status {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .status-high {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+        }
+
+        .status-medium {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+
+        .status-low {
+            background: rgba(255, 255, 255, 0.1);
+            color: #888;
+        }
+
+        .benefit-section {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .benefit-title {
+            color: #ffd700;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .benefit-content {
+            color: #ccc;
+            line-height: 1.8;
+        }
+
+        .benefit-amount {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #ffd700;
+            margin: 10px 0;
+        }
+
+        .recommendations {
+            margin: 30px 0;
+        }
+
+        .rec-title {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #ff8c00;
+        }
+
+        .rec-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ffd700;
+        }
+
+        .rec-number {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(90deg, #ffd700, #ff8c00);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: bold;
+            font-size: 0.85em;
+            color: #0f0f23;
+            margin-right: 10px;
+        }
+
+        .rec-heading {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .rec-detail {
+            color: #aaa;
+            font-size: 0.9em;
+            line-height: 1.7;
+            padding-left: 38px;
+        }
+
+        .warning-section {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .warning-title {
+            color: #ff6b6b;
+            font-size: 1em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .warning-content {
+            color: #ccc;
+            font-size: 0.9em;
+            line-height: 1.7;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 140, 0, 0.1));
+            border-radius: 20px;
+            margin-top: 30px;
+        }
+
+        .cta-title {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .cta-text {
+            color: #aaa;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
+            header {
+                padding: 30px 0;
+            }
+
+            .logo {
+                font-size: 2em;
+            }
+
+            h1 {
+                font-size: 1.4em;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .question-text {
+                font-size: 1.05em;
+            }
+
+            .option {
+                padding: 15px;
+            }
+
+            .score-section {
+                grid-template-columns: 1fr;
+            }
+
+            .score-value {
+                font-size: 1.6em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🏢</div>
+            <h1>法人化タイミング診断</h1>
+            <p class="subtitle">今が法人成りのベストタイミング？<br>税金・リスク・信用の観点から最適な判断をサポート</p>
+        </header>
+
+        <!-- Intro Section -->
+        <div id="intro" class="card">
+            <p class="intro-text">
+                「そろそろ法人化した方がいいのかな…」<br>
+                月収100万円を超えると、この疑問が頭をよぎりますよね。
+            </p>
+            <p class="intro-text">
+                法人化の判断は<span class="highlight">「年収だけ」では決まりません</span>。
+            </p>
+
+            <div class="check-list">
+                <div class="check-item">
+                    <span class="check-icon">✓</span>
+                    <span>税金面でのメリット（所得税 vs 法人税）</span>
+                </div>
+                <div class="check-item">
+                    <span class="check-icon">✓</span>
+                    <span>リスク・責任の分離（個人資産の保護）</span>
+                </div>
+                <div class="check-item">
+                    <span class="check-icon">✓</span>
+                    <span>社会的信用（取引先・融資・採用）</span>
+                </div>
+                <div class="check-item">
+                    <span class="check-icon">✓</span>
+                    <span>事業の成長性と将来計画</span>
+                </div>
+            </div>
+
+            <p class="intro-text">
+                この診断では、12の質問から<span class="highlight">あなたに最適な法人化タイミング</span>を判定します。
+            </p>
+
+            <button class="btn btn-primary" onclick="startDiagnosis()">診断を開始する</button>
+        </div>
+
+        <!-- Question Section -->
+        <div id="question-section" class="card hidden">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="progress-current">1</span>
+                    <span>12問</span>
+                </div>
+            </div>
+
+            <div class="question-number" id="question-number"></div>
+            <div class="question-text" id="question-text"></div>
+
+            <div class="options" id="options"></div>
+
+            <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()" disabled>次の質問へ</button>
+        </div>
+
+        <!-- Result Section -->
+        <div id="result-section" class="hidden">
+            <div class="card">
+                <div class="result-header">
+                    <div class="result-badge" id="result-badge"></div>
+                    <div class="result-title" id="result-title"></div>
+                    <div class="result-summary" id="result-summary"></div>
+                </div>
+
+                <div class="score-section" id="score-section"></div>
+            </div>
+
+            <div class="factor-section card">
+                <div class="factor-title">📊 法人化判断の4つの要素</div>
+                <div id="factors"></div>
+            </div>
+
+            <div class="benefit-section" id="benefit-section"></div>
+
+            <div class="warning-section" id="warning-section"></div>
+
+            <div class="card">
+                <div class="recommendations">
+                    <div class="rec-title">💡 次のアクションステップ</div>
+                    <div id="recommendations"></div>
+                </div>
+            </div>
+
+            <div class="cta-section">
+                <div class="cta-title">法人化について詳しく相談したい方へ</div>
+                <p class="cta-text">税理士・司法書士と連携し、<br>あなたに最適な法人化プランをご提案します</p>
+                <button class="btn btn-primary" onclick="location.reload()">もう一度診断する</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // 収益・税金関連
+            {
+                category: 'tax',
+                text: '現在の年間事業所得（売上−経費）はどのくらいですか？',
+                options: [
+                    { text: '500万円未満', score: { tax: 1, total: 1 } },
+                    { text: '500万円〜800万円', score: { tax: 2, total: 2 } },
+                    { text: '800万円〜1,200万円', score: { tax: 3, total: 3 } },
+                    { text: '1,200万円以上', score: { tax: 4, total: 4 } }
+                ]
+            },
+            {
+                category: 'tax',
+                text: '今後1〜2年の売上見込みは？',
+                options: [
+                    { text: '現状維持または減少', score: { tax: 1, total: 1 } },
+                    { text: '緩やかに増加（〜20%）', score: { tax: 2, total: 2 } },
+                    { text: '大幅に増加（20%〜50%）', score: { tax: 3, total: 3 } },
+                    { text: '急成長見込み（50%以上）', score: { tax: 4, total: 4 } }
+                ]
+            },
+            {
+                category: 'tax',
+                text: '現在の確定申告はどのように行っていますか？',
+                options: [
+                    { text: '白色申告', score: { tax: 1, total: 1 } },
+                    { text: '青色申告（10万円控除）', score: { tax: 2, total: 2 } },
+                    { text: '青色申告（65万円控除）', score: { tax: 3, total: 2 } },
+                    { text: '税理士に完全委託', score: { tax: 3, total: 3 } }
+                ]
+            },
+            // リスク・責任関連
+            {
+                category: 'risk',
+                text: '事業でのリスク・責任について、最も当てはまるものは？',
+                options: [
+                    { text: '特にリスクを感じていない', score: { risk: 1, total: 1 } },
+                    { text: '多少のリスクはあるが、許容範囲', score: { risk: 2, total: 2 } },
+                    { text: '取引金額が大きく、リスクを感じる', score: { risk: 3, total: 3 } },
+                    { text: '個人資産を分離したいと強く思う', score: { risk: 4, total: 4 } }
+                ]
+            },
+            {
+                category: 'risk',
+                text: '事業用の借入や大きな契約はありますか？',
+                options: [
+                    { text: 'ない', score: { risk: 1, total: 1 } },
+                    { text: '小規模な借入がある', score: { risk: 2, total: 2 } },
+                    { text: '事業用借入がある、または検討中', score: { risk: 3, total: 3 } },
+                    { text: '大型の借入・契約があり、保証も必要', score: { risk: 4, total: 4 } }
+                ]
+            },
+            {
+                category: 'risk',
+                text: '家族（配偶者・子供など）の状況は？',
+                options: [
+                    { text: '独身・扶養家族なし', score: { risk: 1, total: 1 } },
+                    { text: '配偶者がいる', score: { risk: 2, total: 2 } },
+                    { text: '配偶者と子供がいる', score: { risk: 3, total: 3 } },
+                    { text: '家族を養っており、リスク分離が重要', score: { risk: 4, total: 4 } }
+                ]
+            },
+            // 信用・ブランド関連
+            {
+                category: 'credit',
+                text: '取引先や顧客の規模・タイプは？',
+                options: [
+                    { text: '個人客が中心', score: { credit: 1, total: 1 } },
+                    { text: '個人客＋小規模事業者', score: { credit: 2, total: 2 } },
+                    { text: '中小企業との取引あり', score: { credit: 3, total: 3 } },
+                    { text: '大企業・上場企業との取引あり/希望', score: { credit: 4, total: 4 } }
+                ]
+            },
+            {
+                category: 'credit',
+                text: '今後、融資を受ける予定はありますか？',
+                options: [
+                    { text: '予定なし', score: { credit: 1, total: 1 } },
+                    { text: 'いつかは考えているが、具体的ではない', score: { credit: 2, total: 2 } },
+                    { text: '1〜2年以内に検討中', score: { credit: 3, total: 3 } },
+                    { text: '近々融資を受けたい・交渉中', score: { credit: 4, total: 4 } }
+                ]
+            },
+            {
+                category: 'credit',
+                text: '人を雇う（正社員・業務委託含む）予定は？',
+                options: [
+                    { text: '予定なし、一人でやっていく', score: { credit: 1, total: 1 } },
+                    { text: '業務委託で外注は使っている', score: { credit: 2, total: 2 } },
+                    { text: 'パート・アルバイトを雇いたい', score: { credit: 3, total: 3 } },
+                    { text: '正社員を雇いたい', score: { credit: 4, total: 4 } }
+                ]
+            },
+            // 将来計画関連
+            {
+                category: 'growth',
+                text: '5年後の事業規模イメージは？',
+                options: [
+                    { text: '現状維持でOK', score: { growth: 1, total: 1 } },
+                    { text: '緩やかに成長できればいい', score: { growth: 2, total: 2 } },
+                    { text: '年商3,000万円〜1億円を目指したい', score: { growth: 3, total: 3 } },
+                    { text: '年商1億円以上、組織化したい', score: { growth: 4, total: 4 } }
+                ]
+            },
+            {
+                category: 'growth',
+                text: '事業の出口戦略（売却・承継など）は考えていますか？',
+                options: [
+                    { text: '考えていない', score: { growth: 1, total: 1 } },
+                    { text: '漠然と考えることはある', score: { growth: 2, total: 2 } },
+                    { text: '将来的には売却や承継も視野に', score: { growth: 3, total: 3 } },
+                    { text: '具体的に検討中', score: { growth: 4, total: 4 } }
+                ]
+            },
+            {
+                category: 'growth',
+                text: '社会保険（健康保険・厚生年金）についての考えは？',
+                options: [
+                    { text: '国民健康保険・国民年金で問題ない', score: { growth: 1, total: 1 } },
+                    { text: '社会保険の方がいいとは思うが、費用が心配', score: { growth: 2, total: 2 } },
+                    { text: '社会保険に入りたい（家族の扶養など）', score: { growth: 3, total: 3 } },
+                    { text: '福利厚生を整えて人を雇いたい', score: { growth: 4, total: 4 } }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = [];
+        let scores = {
+            tax: 0,
+            risk: 0,
+            credit: 0,
+            growth: 0,
+            total: 0
+        };
+
+        function startDiagnosis() {
+            document.getElementById('intro').classList.add('hidden');
+            document.getElementById('question-section').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+
+            document.getElementById('progress-fill').style.width = ((currentQuestion + 1) / questions.length * 100) + '%';
+            document.getElementById('progress-current').textContent = currentQuestion + 1;
+            document.getElementById('question-number').textContent = `Q${currentQuestion + 1}`;
+            document.getElementById('question-text').textContent = q.text;
+
+            const optionsHtml = q.options.map((opt, idx) => `
+                <div class="option" onclick="selectOption(${idx})">
+                    <div class="option-circle"></div>
+                    <span class="option-text">${opt.text}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('options').innerHTML = optionsHtml;
+            document.getElementById('next-btn').disabled = true;
+
+            if (currentQuestion === questions.length - 1) {
+                document.getElementById('next-btn').textContent = '診断結果を見る';
+            }
+        }
+
+        function selectOption(idx) {
+            document.querySelectorAll('.option').forEach((opt, i) => {
+                opt.classList.toggle('selected', i === idx);
+            });
+            answers[currentQuestion] = idx;
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function nextQuestion() {
+            const q = questions[currentQuestion];
+            const selectedOption = q.options[answers[currentQuestion]];
+
+            // Add scores
+            Object.keys(selectedOption.score).forEach(key => {
+                scores[key] += selectedOption.score[key];
+            });
+
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('question-section').classList.add('hidden');
+            document.getElementById('result-section').classList.remove('hidden');
+
+            // Calculate percentages (each category has 3 questions, max 12 per category)
+            const taxScore = Math.round(scores.tax / 12 * 100);
+            const riskScore = Math.round(scores.risk / 12 * 100);
+            const creditScore = Math.round(scores.credit / 12 * 100);
+            const growthScore = Math.round(scores.growth / 12 * 100);
+            const totalScore = Math.round(scores.total / 48 * 100);
+
+            // Determine recommendation
+            let badge, badgeClass, title, summary;
+
+            if (totalScore >= 70) {
+                badge = '今すぐ法人化を検討すべき';
+                badgeClass = 'badge-now';
+                title = '法人化のメリットが大きい状態です';
+                summary = '税金面、リスク管理、社会的信用など、複数の観点から法人化のメリットが個人事業のメリットを上回っています。早めに税理士・司法書士に相談し、具体的な準備を始めましょう。';
+            } else if (totalScore >= 50) {
+                badge = '1年以内に法人化を検討';
+                badgeClass = 'badge-soon';
+                title = '法人化を視野に入れるタイミングです';
+                summary = '現状では急ぐ必要はありませんが、事業の成長とともに法人化のメリットが大きくなります。1年以内を目安に、法人化の準備を始めることをおすすめします。';
+            } else {
+                badge = '今は個人事業主で問題なし';
+                badgeClass = 'badge-wait';
+                title = '現時点では法人化を急ぐ必要はありません';
+                summary = '現在の事業規模・状況では、法人化のコスト・手間に見合うメリットが少ない状態です。事業所得が800万円を超えるタイミングで再度検討しましょう。';
+            }
+
+            document.getElementById('result-badge').textContent = badge;
+            document.getElementById('result-badge').className = `result-badge ${badgeClass}`;
+            document.getElementById('result-title').textContent = title;
+            document.getElementById('result-summary').textContent = summary;
+
+            // Score section
+            document.getElementById('score-section').innerHTML = `
+                <div class="score-item">
+                    <div class="score-value">${totalScore}点</div>
+                    <div class="score-label">法人化推奨スコア</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-value">${getIncomeLevel()}</div>
+                    <div class="score-label">推定事業所得レンジ</div>
+                </div>
+            `;
+
+            // Factors
+            const factorsHtml = [
+                { name: '税金メリット', score: taxScore },
+                { name: 'リスク分離ニーズ', score: riskScore },
+                { name: '社会的信用ニーズ', score: creditScore },
+                { name: '成長・拡大意欲', score: growthScore }
+            ].map(f => {
+                let statusClass, statusText;
+                if (f.score >= 70) {
+                    statusClass = 'status-high';
+                    statusText = '高い';
+                } else if (f.score >= 40) {
+                    statusClass = 'status-medium';
+                    statusText = '中程度';
+                } else {
+                    statusClass = 'status-low';
+                    statusText = '低い';
+                }
+                return `
+                    <div class="factor-item">
+                        <span class="factor-name">${f.name}</span>
+                        <span class="factor-status ${statusClass}">${statusText}</span>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('factors').innerHTML = factorsHtml;
+
+            // Benefit section (tax savings estimate)
+            const benefitSection = document.getElementById('benefit-section');
+            if (taxScore >= 50) {
+                const savings = getTaxSavingsEstimate();
+                benefitSection.innerHTML = `
+                    <div class="benefit-title">💰 法人化による節税メリット（概算）</div>
+                    <div class="benefit-content">
+                        現在の事業所得レベルで法人化した場合、<br>
+                        年間の税金・社会保険料の削減効果は…
+                        <div class="benefit-amount">年間 約${savings}万円</div>
+                        ※役員報酬の設定方法により変動します。詳細は税理士にご相談ください。
+                    </div>
+                `;
+            } else {
+                benefitSection.innerHTML = `
+                    <div class="benefit-title">💰 税金面でのメリット</div>
+                    <div class="benefit-content">
+                        現在の事業所得レベルでは、法人化による税金メリットは限定的です。<br>
+                        事業所得が800万円を超えてきたタイミングで、改めて法人化の税金メリットを計算することをおすすめします。
+                    </div>
+                `;
+            }
+
+            // Warning section
+            const warningSection = document.getElementById('warning-section');
+            if (totalScore >= 50) {
+                warningSection.innerHTML = `
+                    <div class="warning-title">⚠️ 法人化前に確認すべきこと</div>
+                    <div class="warning-content">
+                        ・法人設立費用（株式会社：約25万円、合同会社：約10万円）<br>
+                        ・毎年の法人住民税（均等割：約7万円〜）<br>
+                        ・社会保険への強制加入（役員報酬を設定する場合）<br>
+                        ・税理士顧問料（月額2〜5万円程度）<br>
+                        ・決算・申告の義務（個人より複雑になる）
+                    </div>
+                `;
+            } else {
+                warningSection.innerHTML = `
+                    <div class="warning-title">📌 今やるべきこと</div>
+                    <div class="warning-content">
+                        法人化を急ぐ前に、まずは以下を整備しましょう：<br>
+                        ・青色申告（65万円控除）の活用<br>
+                        ・経費の適正な計上<br>
+                        ・小規模企業共済への加入<br>
+                        ・iDeCoなど個人でできる節税対策の最大化
+                    </div>
+                `;
+            }
+
+            // Recommendations
+            const recommendations = getRecommendations(totalScore, taxScore, riskScore, creditScore, growthScore);
+            document.getElementById('recommendations').innerHTML = recommendations.map((rec, i) => `
+                <div class="rec-item">
+                    <div class="rec-heading">
+                        <span class="rec-number">${i + 1}</span>
+                        ${rec.title}
+                    </div>
+                    <div class="rec-detail">${rec.detail}</div>
+                </div>
+            `).join('');
+        }
+
+        function getIncomeLevel() {
+            // Based on first question answer
+            const levels = ['500万未満', '500-800万', '800-1200万', '1200万以上'];
+            return levels[answers[0]] || '不明';
+        }
+
+        function getTaxSavingsEstimate() {
+            // Rough estimate based on income level
+            const incomeLevel = answers[0];
+            if (incomeLevel === 0) return '10〜30';
+            if (incomeLevel === 1) return '30〜60';
+            if (incomeLevel === 2) return '60〜100';
+            return '100〜200';
+        }
+
+        function getRecommendations(total, tax, risk, credit, growth) {
+            const recs = [];
+
+            if (total >= 70) {
+                recs.push({
+                    title: '税理士に法人化シミュレーションを依頼',
+                    detail: '具体的な数字で「個人のまま」vs「法人化」のシミュレーションを作成してもらいましょう。役員報酬の最適額、社会保険料、法人税額などを試算し、本当にメリットがあるか確認します。'
+                });
+                recs.push({
+                    title: '法人の種類を決める（株式会社 or 合同会社）',
+                    detail: '株式会社は信用力が高いですが設立費用が約25万円。合同会社は約10万円で設立でき、税務メリットは同じです。取引先や将来の資金調達予定で判断しましょう。'
+                });
+                recs.push({
+                    title: '設立のベストタイミングを決める',
+                    detail: '消費税の免税期間（最大2年）を最大限活用するため、売上1,000万円を超える年度の「翌年度開始日」に合わせて法人化するのが一般的です。'
+                });
+            } else if (total >= 50) {
+                recs.push({
+                    title: '今年度の事業所得を正確に把握する',
+                    detail: '年末に向けて、今年度の事業所得（売上−経費）を正確に計算しましょう。800万円を超えるかどうかが法人化検討の一つの目安になります。'
+                });
+                recs.push({
+                    title: '個人でできる節税を最大化する',
+                    detail: '青色申告65万円控除、小規模企業共済（月額7万円まで全額控除）、iDeCo（月額6.8万円まで）など、個人事業のまま使える節税策をフル活用しましょう。'
+                });
+                recs.push({
+                    title: '法人化の準備を始める',
+                    detail: '事業用口座の整理、経費の明確化、取引先リストの作成など、法人化時にスムーズに移行できるよう、少しずつ準備を進めておきましょう。'
+                });
+            } else {
+                recs.push({
+                    title: 'まずは事業拡大に集中する',
+                    detail: '現状では法人化のメリットは限定的です。まずは事業所得800万円を目指して、売上拡大・顧客獲得に注力しましょう。'
+                });
+                recs.push({
+                    title: '青色申告で節税を最大化する',
+                    detail: '青色申告の65万円控除を活用していますか？これだけで所得税・住民税が10万円以上変わることも。まずは個人でできる節税を徹底しましょう。'
+                });
+                recs.push({
+                    title: '経理・会計を整備する',
+                    detail: '将来の法人化に向けて、今のうちから経理をきちんと整備しておきましょう。クラウド会計の導入、経費の明確な区分、領収書の整理などが基本です。'
+                });
+            }
+
+            return recs;
+        }
+    </script>
+</body>
+</html>

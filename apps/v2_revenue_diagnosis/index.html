@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>収益構造診断 - あなたのビジネスの収益バランスを可視化</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            min-height: 100vh;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .header-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 14px;
+        }
+
+        /* Progress */
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #3b82f6);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #888;
+        }
+
+        /* Question Card */
+        .question-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .question-category {
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        /* Options */
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            border-color: rgba(16, 185, 129, 0.5);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .option.selected {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .option-marker {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .option.selected .option-marker {
+            border-color: #10b981;
+            background: #10b981;
+        }
+
+        .option.selected .option-marker::after {
+            content: '✓';
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .option-text {
+            font-size: 14px;
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.1);
+            color: #888;
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            color: white;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Results */
+        .results {
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .result-header {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        .result-type {
+            font-size: 14px;
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+
+        .result-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        /* Revenue Chart */
+        .chart-container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chart-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chart-row {
+            display: grid;
+            grid-template-columns: 100px 1fr 60px;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .chart-label {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .chart-bar-bg {
+            height: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .chart-bar-fill {
+            height: 100%;
+            border-radius: 12px;
+            transition: width 1s ease;
+        }
+
+        .chart-bar-fill.spot { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .chart-bar-fill.recurring { background: linear-gradient(90deg, #10b981, #34d399); }
+        .chart-bar-fill.high { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+
+        .chart-value {
+            font-size: 14px;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        /* Diagnosis Cards */
+        .diagnosis-section {
+            margin-top: 25px;
+        }
+
+        .diagnosis-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 15px;
+        }
+
+        .diagnosis-card h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .diagnosis-card p {
+            font-size: 14px;
+            color: #a0a0a0;
+            line-height: 1.8;
+        }
+
+        .diagnosis-card ul {
+            margin-top: 15px;
+            padding-left: 20px;
+        }
+
+        .diagnosis-card li {
+            font-size: 13px;
+            color: #a0a0a0;
+            margin-bottom: 8px;
+        }
+
+        /* Score Badge */
+        .score-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 30px;
+            padding: 8px 20px;
+            margin-bottom: 20px;
+        }
+
+        .score-badge span {
+            font-size: 14px;
+            color: #10b981;
+        }
+
+        .score-badge strong {
+            font-size: 18px;
+            color: #10b981;
+        }
+
+        /* Balance Indicator */
+        .balance-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .balance-item {
+            text-align: center;
+        }
+
+        .balance-label {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .balance-status {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .balance-status.good { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .balance-status.warning { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .balance-status.danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+        /* Action Box */
+        .action-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .action-box h4 {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .action-box p {
+            font-size: 13px;
+            color: #a0a0a0;
+        }
+
+        /* Restart */
+        .restart-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 12px;
+            color: #888;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-icon">💰</div>
+            <h1>収益構造診断</h1>
+            <p>あなたのビジネスの収益バランスを可視化します</p>
+        </header>
+
+        <div id="quiz-section">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-text"><span id="current-q">1</span> / <span id="total-q">12</span></div>
+            </div>
+
+            <div class="question-card">
+                <div class="question-category" id="question-category"></div>
+                <div class="question-text" id="question-text"></div>
+                <div class="options" id="options"></div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-back" id="btn-back" onclick="prevQuestion()">戻る</button>
+                <button class="btn btn-next" id="btn-next" onclick="nextQuestion()" disabled>次へ</button>
+            </div>
+        </div>
+
+        <div class="results" id="results-section">
+            <div class="result-header">
+                <div class="result-type" id="result-type"></div>
+                <h2 class="result-title" id="result-title"></h2>
+                <div class="score-badge">
+                    <span>収益バランススコア</span>
+                    <strong id="balance-score">0</strong>
+                    <span>/ 100</span>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">あなたの収益構造</div>
+                <div class="chart-bars">
+                    <div class="chart-row">
+                        <div class="chart-label">単発収益</div>
+                        <div class="chart-bar-bg">
+                            <div class="chart-bar-fill spot" id="spot-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="chart-value" id="spot-value">0%</div>
+                    </div>
+                    <div class="chart-row">
+                        <div class="chart-label">継続収益</div>
+                        <div class="chart-bar-bg">
+                            <div class="chart-bar-fill recurring" id="recurring-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="chart-value" id="recurring-value">0%</div>
+                    </div>
+                    <div class="chart-row">
+                        <div class="chart-label">高単価</div>
+                        <div class="chart-bar-bg">
+                            <div class="chart-bar-fill high" id="high-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="chart-value" id="high-value">0%</div>
+                    </div>
+                </div>
+
+                <div class="balance-indicator">
+                    <div class="balance-item">
+                        <div class="balance-label">安定性</div>
+                        <div class="balance-status" id="stability-status">-</div>
+                    </div>
+                    <div class="balance-item">
+                        <div class="balance-label">成長性</div>
+                        <div class="balance-status" id="growth-status">-</div>
+                    </div>
+                    <div class="balance-item">
+                        <div class="balance-label">効率性</div>
+                        <div class="balance-status" id="efficiency-status">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="diagnosis-section">
+                <div class="diagnosis-card">
+                    <h3>📊 診断結果</h3>
+                    <p id="diagnosis-text"></p>
+                </div>
+
+                <div class="diagnosis-card">
+                    <h3>⚠️ 改善ポイント</h3>
+                    <ul id="improvement-list"></ul>
+                </div>
+
+                <div class="diagnosis-card">
+                    <h3>✅ 次のアクション</h3>
+                    <ul id="action-list"></ul>
+                </div>
+            </div>
+
+            <div class="action-box">
+                <h4>理想の収益バランス</h4>
+                <p>単発収益 30% / 継続収益 40% / 高単価 30%<br>この比率に近づけることで、安定と成長を両立できます</p>
+            </div>
+
+            <button class="restart-btn" onclick="restart()">もう一度診断する</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // 単発収益に関する質問
+            {
+                category: "単発収益",
+                text: "現在の売上における単発商品・サービスの割合は？",
+                options: [
+                    { text: "80%以上", scores: { spot: 5, recurring: 0, high: 0 } },
+                    { text: "50〜79%", scores: { spot: 4, recurring: 1, high: 0 } },
+                    { text: "30〜49%", scores: { spot: 3, recurring: 2, high: 0 } },
+                    { text: "30%未満", scores: { spot: 1, recurring: 3, high: 0 } }
+                ]
+            },
+            {
+                category: "単発収益",
+                text: "新規顧客からの単発売上の獲得頻度は？",
+                options: [
+                    { text: "毎週のように獲得", scores: { spot: 5, recurring: 0, high: 0 } },
+                    { text: "月に数件", scores: { spot: 3, recurring: 0, high: 0 } },
+                    { text: "不定期", scores: { spot: 2, recurring: 0, high: 0 } },
+                    { text: "ほとんどない", scores: { spot: 0, recurring: 0, high: 0 } }
+                ]
+            },
+            {
+                category: "単発収益",
+                text: "単発商品のリピート購入率は？",
+                options: [
+                    { text: "50%以上がリピート", scores: { spot: 3, recurring: 2, high: 0 } },
+                    { text: "20〜49%", scores: { spot: 4, recurring: 1, high: 0 } },
+                    { text: "20%未満", scores: { spot: 5, recurring: 0, high: 0 } },
+                    { text: "把握していない", scores: { spot: 3, recurring: 0, high: 0 } }
+                ]
+            },
+            // 継続収益に関する質問
+            {
+                category: "継続収益",
+                text: "サブスク・月額課金型のサービスはありますか？",
+                options: [
+                    { text: "主力商品として展開中", scores: { spot: 0, recurring: 5, high: 0 } },
+                    { text: "一部で展開中", scores: { spot: 0, recurring: 3, high: 0 } },
+                    { text: "検討中・準備中", scores: { spot: 0, recurring: 1, high: 0 } },
+                    { text: "なし・予定なし", scores: { spot: 0, recurring: 0, high: 0 } }
+                ]
+            },
+            {
+                category: "継続収益",
+                text: "継続顧客の平均継続期間は？",
+                options: [
+                    { text: "1年以上", scores: { spot: 0, recurring: 5, high: 0 } },
+                    { text: "6ヶ月〜1年", scores: { spot: 0, recurring: 4, high: 0 } },
+                    { text: "3〜6ヶ月", scores: { spot: 0, recurring: 2, high: 0 } },
+                    { text: "3ヶ月未満または継続商品なし", scores: { spot: 0, recurring: 0, high: 0 } }
+                ]
+            },
+            {
+                category: "継続収益",
+                text: "毎月の固定収入（継続課金）の割合は？",
+                options: [
+                    { text: "50%以上", scores: { spot: 0, recurring: 5, high: 0 } },
+                    { text: "30〜49%", scores: { spot: 0, recurring: 4, high: 0 } },
+                    { text: "10〜29%", scores: { spot: 0, recurring: 2, high: 0 } },
+                    { text: "10%未満", scores: { spot: 0, recurring: 0, high: 0 } }
+                ]
+            },
+            {
+                category: "継続収益",
+                text: "解約率（チャーンレート）を把握していますか？",
+                options: [
+                    { text: "把握しており5%以下", scores: { spot: 0, recurring: 5, high: 0 } },
+                    { text: "把握しており10%程度", scores: { spot: 0, recurring: 3, high: 0 } },
+                    { text: "把握しているが高い", scores: { spot: 0, recurring: 1, high: 0 } },
+                    { text: "把握していない", scores: { spot: 0, recurring: 0, high: 0 } }
+                ]
+            },
+            // 高単価に関する質問
+            {
+                category: "高単価商品",
+                text: "30万円以上の高単価商品はありますか？",
+                options: [
+                    { text: "主力商品として販売中", scores: { spot: 0, recurring: 0, high: 5 } },
+                    { text: "一部で販売中", scores: { spot: 0, recurring: 0, high: 3 } },
+                    { text: "準備中・検討中", scores: { spot: 0, recurring: 0, high: 1 } },
+                    { text: "なし", scores: { spot: 0, recurring: 0, high: 0 } }
+                ]
+            },
+            {
+                category: "高単価商品",
+                text: "高単価商品の成約率は？",
+                options: [
+                    { text: "30%以上", scores: { spot: 0, recurring: 0, high: 5 } },
+                    { text: "15〜29%", scores: { spot: 0, recurring: 0, high: 4 } },
+                    { text: "5〜14%", scores: { spot: 0, recurring: 0, high: 2 } },
+                    { text: "5%未満または高単価商品なし", scores: { spot: 0, recurring: 0, high: 0 } }
+                ]
+            },
+            {
+                category: "高単価商品",
+                text: "高単価商品のサポート体制は？",
+                options: [
+                    { text: "1on1サポートを提供", scores: { spot: 0, recurring: 0, high: 5 } },
+                    { text: "グループサポートを提供", scores: { spot: 0, recurring: 0, high: 3 } },
+                    { text: "コンテンツ提供のみ", scores: { spot: 0, recurring: 0, high: 1 } },
+                    { text: "高単価商品なし", scores: { spot: 0, recurring: 0, high: 0 } }
+                ]
+            },
+            {
+                category: "高単価商品",
+                text: "顧客単価を上げる施策は？",
+                options: [
+                    { text: "アップセル・クロスセルを体系化", scores: { spot: 1, recurring: 1, high: 4 } },
+                    { text: "一部で実施", scores: { spot: 1, recurring: 1, high: 2 } },
+                    { text: "検討中", scores: { spot: 0, recurring: 0, high: 1 } },
+                    { text: "特にない", scores: { spot: 0, recurring: 0, high: 0 } }
+                ]
+            },
+            // 総合
+            {
+                category: "総合",
+                text: "来月の売上予測の精度は？",
+                options: [
+                    { text: "±10%以内で予測可能", scores: { spot: 1, recurring: 4, high: 1 } },
+                    { text: "±30%程度で予測可能", scores: { spot: 2, recurring: 2, high: 1 } },
+                    { text: "大まかにしか分からない", scores: { spot: 3, recurring: 1, high: 0 } },
+                    { text: "全く読めない", scores: { spot: 4, recurring: 0, high: 0 } }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = [];
+        let scores = { spot: 0, recurring: 0, high: 0 };
+
+        function init() {
+            document.getElementById('total-q').textContent = questions.length;
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('question-category').textContent = q.category;
+            document.getElementById('question-text').textContent = q.text;
+
+            const optionsHtml = q.options.map((opt, i) => `
+                <div class="option ${answers[currentQuestion] === i ? 'selected' : ''}" onclick="selectOption(${i})">
+                    <div class="option-marker"></div>
+                    <div class="option-text">${opt.text}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('options').innerHTML = optionsHtml;
+            document.getElementById('current-q').textContent = currentQuestion + 1;
+            document.getElementById('progress-fill').style.width = ((currentQuestion + 1) / questions.length * 100) + '%';
+            document.getElementById('btn-back').style.visibility = currentQuestion === 0 ? 'hidden' : 'visible';
+            document.getElementById('btn-next').disabled = answers[currentQuestion] === undefined;
+            document.getElementById('btn-next').textContent = currentQuestion === questions.length - 1 ? '診断結果を見る' : '次へ';
+        }
+
+        function selectOption(index) {
+            answers[currentQuestion] = index;
+            document.querySelectorAll('.option').forEach((opt, i) => {
+                opt.classList.toggle('selected', i === index);
+            });
+            document.getElementById('btn-next').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion();
+            }
+        }
+
+        function calculateScores() {
+            scores = { spot: 0, recurring: 0, high: 0 };
+            answers.forEach((ansIndex, qIndex) => {
+                const selected = questions[qIndex].options[ansIndex];
+                scores.spot += selected.scores.spot;
+                scores.recurring += selected.scores.recurring;
+                scores.high += selected.scores.high;
+            });
+        }
+
+        function showResults() {
+            calculateScores();
+
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('results-section').classList.add('show');
+
+            const total = scores.spot + scores.recurring + scores.high;
+            const spotPct = Math.round(scores.spot / total * 100) || 0;
+            const recurringPct = Math.round(scores.recurring / total * 100) || 0;
+            const highPct = 100 - spotPct - recurringPct;
+
+            // チャート表示
+            setTimeout(() => {
+                document.getElementById('spot-bar').style.width = spotPct + '%';
+                document.getElementById('recurring-bar').style.width = recurringPct + '%';
+                document.getElementById('high-bar').style.width = highPct + '%';
+            }, 100);
+
+            document.getElementById('spot-value').textContent = spotPct + '%';
+            document.getElementById('recurring-value').textContent = recurringPct + '%';
+            document.getElementById('high-value').textContent = highPct + '%';
+
+            // バランススコア計算
+            const idealSpot = 30, idealRecurring = 40, idealHigh = 30;
+            const deviation = Math.abs(spotPct - idealSpot) + Math.abs(recurringPct - idealRecurring) + Math.abs(highPct - idealHigh);
+            const balanceScore = Math.max(0, 100 - deviation);
+            document.getElementById('balance-score').textContent = balanceScore;
+
+            // 診断タイプ判定
+            let resultType, resultTitle, diagnosisText;
+            let improvements = [];
+            let actions = [];
+
+            if (recurringPct >= 40 && highPct >= 25) {
+                resultType = "理想的なバランス型";
+                resultTitle = "安定成長モデル";
+                diagnosisText = "継続収益と高単価のバランスが取れた理想的な収益構造です。安定した基盤の上で高収益を実現できています。";
+                improvements = ["単発商品をフロントエンドとして活用し、継続・高単価への導線を強化"];
+                actions = ["継続顧客のLTV最大化施策を検討", "高単価商品のさらなるブラッシュアップ"];
+            } else if (spotPct >= 60) {
+                resultType = "単発依存型";
+                resultTitle = "新規獲得重視モデル";
+                diagnosisText = "売上の多くを単発収益に依存しています。新規顧客の獲得に労力がかかり、収益の安定性に課題があります。";
+                improvements = ["継続課金モデルの導入を最優先で検討", "リピート購入を促す仕組みづくり", "顧客との接点を増やす施策"];
+                actions = ["月額制サービスの企画・設計", "既存顧客へのフォローアップ強化", "サブスク商品のテスト販売"];
+            } else if (recurringPct >= 50) {
+                resultType = "継続収益重視型";
+                resultTitle = "ストック型モデル";
+                diagnosisText = "継続収益が安定している良い状態です。ただし、高単価商品が少なく、収益の天井が見えやすい構造です。";
+                improvements = ["高単価のバックエンド商品を開発", "既存顧客へのアップセル強化"];
+                actions = ["プレミアムプランの設計", "高単価コンサル・講座の企画", "顧客の成功事例を活用した高単価訴求"];
+            } else if (highPct >= 50) {
+                resultType = "高単価依存型";
+                resultTitle = "ハイチケット型モデル";
+                diagnosisText = "高単価商品での収益化は成功していますが、集客や継続の仕組みが弱い可能性があります。";
+                improvements = ["フロントエンド商品の充実", "継続課金での安定基盤づくり"];
+                actions = ["低単価のエントリー商品を作成", "月額コミュニティなど継続商品を検討", "自動化された集客導線の構築"];
+            } else {
+                resultType = "発展途上型";
+                resultTitle = "成長余地大のモデル";
+                diagnosisText = "収益構造がまだ確立されていない段階です。まずは1つの柱を確立することが重要です。";
+                improvements = ["最も得意な分野での商品強化", "ターゲット顧客の明確化", "収益モデルの選択と集中"];
+                actions = ["まず継続収益の仕組みを優先して構築", "その後、高単価商品を開発", "単発は入口商品として位置づけ"];
+            }
+
+            document.getElementById('result-type').textContent = resultType;
+            document.getElementById('result-title').textContent = resultTitle;
+            document.getElementById('diagnosis-text').textContent = diagnosisText;
+
+            document.getElementById('improvement-list').innerHTML = improvements.map(i => `<li>${i}</li>`).join('');
+            document.getElementById('action-list').innerHTML = actions.map(a => `<li>${a}</li>`).join('');
+
+            // ステータス表示
+            const setStatus = (id, value, thresholds) => {
+                const el = document.getElementById(id);
+                if (value >= thresholds.good) {
+                    el.textContent = '良好';
+                    el.className = 'balance-status good';
+                } else if (value >= thresholds.warning) {
+                    el.textContent = '注意';
+                    el.className = 'balance-status warning';
+                } else {
+                    el.textContent = '要改善';
+                    el.className = 'balance-status danger';
+                }
+            };
+
+            setStatus('stability-status', recurringPct, { good: 35, warning: 20 });
+            setStatus('growth-status', highPct, { good: 25, warning: 15 });
+            setStatus('efficiency-status', balanceScore, { good: 70, warning: 50 });
+        }
+
+        function restart() {
+            currentQuestion = 0;
+            answers = [];
+            scores = { spot: 0, recurring: 0, high: 0 };
+            document.getElementById('quiz-section').classList.remove('hidden');
+            document.getElementById('results-section').classList.remove('show');
+            showQuestion();
+        }
+
+        init();
+    </script>
+</body>
+</html>
